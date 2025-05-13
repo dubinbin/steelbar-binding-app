@@ -10,10 +10,11 @@ import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 import { GlobalSnackbarManager } from '../snackbar-global';
 
+import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
-import { Command } from '@/constants/command';
+import { GlobalConst } from '@/constants';
 
 export const Header = () => {
   const { top } = useSafeAreaInsets();
@@ -98,7 +99,12 @@ export const Header = () => {
     const uniqueSSIDs = new Map();
     loadWifiList.forEach((wifi) => {
       // 只保留有效的SSID，并且只保留每个SSID的第一个遇到的项
-      if (wifi.SSID && wifi.SSID !== '(hidden SSID)' && !uniqueSSIDs.has(wifi.SSID)) {
+      if (
+        wifi.SSID &&
+        wifi.SSID !== '(hidden SSID)' &&
+        !uniqueSSIDs.has(wifi.SSID) &&
+        wifi.SSID.indexOf(GlobalConst.wifiName) !== -1
+      ) {
         uniqueSSIDs.set(wifi.SSID, wifi);
       }
     });
@@ -195,7 +201,7 @@ export const Header = () => {
             </View>
 
             <FlatList
-              data={wifiList}
+              data={wifiList.length > 0 ? wifiList : []}
               keyExtractor={(item) => item.SSID + item.BSSID}
               renderItem={({ item }) => {
                 return (
@@ -220,6 +226,11 @@ export const Header = () => {
                   </TouchableOpacity>
                 );
               }}
+              ListEmptyComponent={
+                <View className="flex flex-row items-center justify-center">
+                  <Text className="text-gray-800">暂无可以连接的WiFi</Text>
+                </View>
+              }
             />
           </View>
         </Modal>

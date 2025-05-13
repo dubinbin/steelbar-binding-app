@@ -10,7 +10,7 @@ import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 
 export default function Error() {
   const { height } = Dimensions.get('window');
-  const [numberOfItemsPerPageList] = useState([height > 800 ? 10 : 3]);
+  const [numberOfItemsPerPageList] = useState([height > 700 ? 10 : 3]);
   const [items, setItems] = useState<{ key: number; index: string; time: string; name: string }[]>(
     []
   );

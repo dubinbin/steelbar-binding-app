@@ -1,7 +1,7 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Button, Card, Icon, TextInput } from 'react-native-paper';
 
 import { Header } from '@/components/header';
@@ -10,7 +10,6 @@ import useStore from '@/store';
 
 export default function Setting() {
   const { canLoginInfo } = useStore((state) => state);
-  const { width } = Dimensions.get('window');
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
   const goback = () => {
     router.back();
@@ -46,7 +45,7 @@ export default function Setting() {
                 <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">用户信息</Text>
               </View>
             </View>
-            <ScrollView className="h-72 lg:h-auto">
+            <ScrollView className="h-72 lg:h-96">
               <View className="gap-5">
                 <TextInput
                   label="用户名"

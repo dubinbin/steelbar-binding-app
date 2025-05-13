@@ -25,7 +25,9 @@ export const ControlSegmented = () => {
         value={robotStatus.currentMode}
         density="medium"
         onValueChange={(value) => {
-          sendCmd(value as ROBOT_CURRENT_MODE);
+          if (value !== ROBOT_CURRENT_MODE.AUTO) {
+            sendCmd(value as ROBOT_CURRENT_MODE);
+          }
           setRobotStatus({
             currentMode: value as ROBOT_CURRENT_MODE,
           });

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 
-import { ChangeState, DownState, RebootState } from '@/constants';
+import { ChangeState, DownState, RebootState, TyingState } from '@/constants';
 import { eventBusKey } from '@/constants/event';
 import useStore from '@/store';
 import eventBus from '@/utils/eventBus';
@@ -17,6 +17,18 @@ export const EventHandler = () => {
       setRobotStatus({
         robotDangerStatus: eStop,
       });
+    });
+
+    eventBus.subscribe(eventBusKey.StatusEvent, ({ eStatus }: { eStatus: number }) => {
+      if (eStatus === TyingState.work) {
+        setRobotStatus({
+          isWorking: true,
+        });
+      } else {
+        setRobotStatus({
+          isWorking: false,
+        });
+      }
     });
 
     eventBus.subscribe(eventBusKey.OverageEvent, ({ eRage }: { eRage: number }) => {

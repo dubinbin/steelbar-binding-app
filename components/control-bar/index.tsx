@@ -74,7 +74,7 @@ export const ControlBar = () => {
           {renderControl()}
         </View>
 
-        {height > 800 ? (
+        {height > 700 ? (
           <View className="flex w-full flex-row justify-end gap-x-5">
             <ControlExtraModule />
           </View>
