@@ -10,10 +10,6 @@ import { sendCmdDispatch } from '@/utils/helper';
 export const ControlManualControl = () => {
   const { robotStatus } = useStore((state) => state);
 
-  const tryTest = () => {
-    console.log('Pressed');
-  };
-
   // 为什么不用switch 因为似乎switch对于里面再定义复杂逻辑会提示不能重复定义let/const等逻辑
   const switchLeftOrRight = (direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
@@ -65,9 +61,9 @@ export const ControlManualControl = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={tryTest} className="flex rounded-full bg-[#012641] px-5 py-5">
+      {/* <TouchableOpacity onPress={tryTest} className="flex rounded-full bg-[#012641] px-5 py-5">
         <Text className="text-center text-lg text-white">试扎</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">
         <TouchableOpacity onPress={() => switchLeftOrRight(DIRECTION.LEFT)}>

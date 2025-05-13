@@ -14,7 +14,7 @@ import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { sendCmdDispatch } from '@/utils/helper';
 
 export const ControlBar = () => {
-  const { robotStatus, workParams } = useStore((state) => state);
+  const { robotStatus, workParams, setRobotStatus } = useStore((state) => state);
   const [showMore, setShowMore] = useState(false);
 
   const { height } = Dimensions.get('window');
@@ -28,21 +28,28 @@ export const ControlBar = () => {
       return;
     }
 
-    switch (robotStatus.currentBindingMode) {
-      case ROBOT_WORK_MODE.WITHOUT_BINDING:
-        sendCmdDispatch(Command.noLashed);
-        break;
-      case ROBOT_WORK_MODE.FULL_BINDING:
-        sendCmdDispatch(Command.allLashed);
-        break;
-      case ROBOT_WORK_MODE.SKIP_BINDING:
-        sendCmdDispatch(Command.jumpLashed);
-        break;
-      default:
-        GlobalSnackbarManager.current?.show({
-          content: '当前绑扎模式不支持',
-        });
-        break;
+    if (!robotStatus.isWorking) {
+      switch (robotStatus.currentBindingMode) {
+        case ROBOT_WORK_MODE.WITHOUT_BINDING:
+          sendCmdDispatch(Command.noLashed);
+          break;
+        case ROBOT_WORK_MODE.FULL_BINDING:
+          sendCmdDispatch(Command.allLashed);
+          break;
+        case ROBOT_WORK_MODE.SKIP_BINDING:
+          sendCmdDispatch(Command.jumpLashed);
+          break;
+        default:
+          GlobalSnackbarManager.current?.show({
+            content: '当前绑扎模式不支持',
+          });
+          break;
+      }
+    } else {
+      sendCmdDispatch(Command.manualModel);
+      setRobotStatus({
+        isWorking: false,
+      });
     }
   };
 

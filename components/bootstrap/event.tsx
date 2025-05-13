@@ -31,6 +31,12 @@ export const EventHandler = () => {
       }
     });
 
+    eventBus.subscribe(eventBusKey.ElectricEvent, ({ eElectric }: { eElectric: number }) => {
+      setRobotStatus({
+        electric: eElectric,
+      });
+    });
+
     eventBus.subscribe(eventBusKey.OverageEvent, ({ eRage }: { eRage: number }) => {
       setDataInspect({
         overage_num: eRage,

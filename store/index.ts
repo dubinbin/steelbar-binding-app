@@ -17,12 +17,13 @@ interface State {
     robotDangerStatus: boolean;
     direction: Map<DIRECTION, boolean>;
     currentMode: ROBOT_CURRENT_MODE;
-    currentBindingMode: ROBOT_WORK_MODE;
+    currentBindingMode: ROBOT_WORK_MODE | '';
     isWorking: boolean;
     skip_binding_count: number;
     downState: DownState;
     rebootState: RebootState;
     changeState: ChangeState;
+    electric: number;
   };
   setRobotStatus: (newInfo: Partial<State['robotStatus']>) => void;
   userInfo: {
@@ -73,6 +74,7 @@ export const initWorkParams = {
 
 export const useStore = create<State>((set) => ({
   robotStatus: {
+    electric: 100, // 电量
     robotDangerStatus: false, // 软急停状态
     direction: new Map([
       // 前进方向
@@ -82,7 +84,7 @@ export const useStore = create<State>((set) => ({
       [DIRECTION.RIGHT, false],
     ]),
     currentMode: ROBOT_CURRENT_MODE.LOCKED, // 当前模式
-    currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING, // 当前绑扎模式
+    currentBindingMode: '', // 当前绑扎模式
     isWorking: false, // 机器人是否在工作
     skip_binding_count: 1, // 默认跳扎数
     downState: DownState.finish, // 机器人下降状态

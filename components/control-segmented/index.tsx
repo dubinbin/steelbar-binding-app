@@ -29,6 +29,11 @@ export const ControlSegmented = () => {
           setRobotStatus({
             currentMode: value as ROBOT_CURRENT_MODE,
           });
+          if (value !== ROBOT_CURRENT_MODE.AUTO) {
+            setRobotStatus({
+              currentBindingMode: '',
+            });
+          }
         }}
         buttons={[
           {
@@ -71,6 +76,13 @@ export const ControlSegmented = () => {
             setRobotStatus({
               currentBindingMode: value as ROBOT_WORK_MODE,
             });
+            if (value === ROBOT_WORK_MODE.WITHOUT_BINDING) {
+              sendCmdDispatch(Command.noLashed);
+            } else if (value === ROBOT_WORK_MODE.FULL_BINDING) {
+              sendCmdDispatch(Command.allLashed);
+            } else if (value === ROBOT_WORK_MODE.SKIP_BINDING) {
+              sendCmdDispatch(Command.jumpLashed);
+            }
           }}
           buttons={[
             {

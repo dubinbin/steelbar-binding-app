@@ -1,6 +1,14 @@
 import { Image } from 'expo-image';
 import { router, usePathname } from 'expo-router';
-import { BatteryFull, Gear, WifiHigh } from 'phosphor-react-native';
+import {
+  BatteryEmpty,
+  BatteryFull,
+  BatteryHigh,
+  BatteryLow,
+  BatteryMedium,
+  Gear,
+  WifiHigh,
+} from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { PermissionsAndroid, TouchableOpacity, View, Text, FlatList, AppState } from 'react-native';
 import { Button, Dialog, Icon, Modal, Portal, TextInput } from 'react-native-paper';
@@ -10,11 +18,11 @@ import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 import { GlobalSnackbarManager } from '../snackbar-global';
 
+import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
-import { GlobalConst } from '@/constants';
 
 export const Header = () => {
   const { top } = useSafeAreaInsets();
@@ -89,6 +97,18 @@ export const Header = () => {
     globalGetConnect();
 
     GlobalActivityIndicatorManager.current?.hide();
+  };
+
+  const renderBatteryIcon = () => {
+    if (robotStatus.electric > 80) {
+      return <BatteryFull size={32} weight="bold" />;
+    } else if (robotStatus.electric > 50) {
+      return <BatteryMedium size={32} weight="bold" />;
+    } else if (robotStatus.electric > 20) {
+      return <BatteryLow size={32} weight="bold" />;
+    } else {
+      return <BatteryEmpty size={32} weight="bold" />;
+    }
   };
 
   // 刷新WiFi列表
@@ -273,7 +293,7 @@ export const Header = () => {
           </TouchableOpacity>
         ) : null}
 
-        <BatteryFull size={32} weight="bold" />
+        {renderBatteryIcon()}
 
         {pathname.indexOf('/login') === -1 ? (
           <Button
