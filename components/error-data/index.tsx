@@ -9,7 +9,7 @@ import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 export const ErrorData = () => {
   const { height } = Dimensions.get('window');
   const targetHeight = height * 0.45;
-  const rowCount = Math.floor(targetHeight / 100);
+  const rowCount = height > 600 ? Math.floor(targetHeight / 100) : 1;
 
   const { errorGroup } = useStore((state) => state);
 
