@@ -25,7 +25,7 @@ export const DangerousStatus = () => {
           mode="outlined"
           className="my-5 w-[300px] rounded-2xl"
           contentStyle={{ backgroundColor: '#088CFFFF', padding: 30 }}
-          onPress={releaseDangerStatus}>
+          onLongPress={releaseDangerStatus}>
           <View className="flex flex-row items-center justify-center">
             <Icon source="hand-okay" size={24} color="#ffffff" />
             <Text className="ml-2 text-2xl text-white">解除危险状态</Text>
