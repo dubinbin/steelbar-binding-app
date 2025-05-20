@@ -1,5 +1,6 @@
-import WifiManager from 'react-native-wifi-reborn';
 import { NetworkInfo } from 'react-native-network-info';
+import WifiManager from 'react-native-wifi-reborn';
+
 import { ConnectDeviceInfo } from './connectDeviceInfo';
 import eventBus from './eventBus';
 import { SocketManage } from './socketManage';

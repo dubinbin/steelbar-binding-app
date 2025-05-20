@@ -1,6 +1,6 @@
 export enum eventBusKey {
   LanguageEvent = 'LanguageEvent',
-  WifiEvent = 'WifiEvent',
+  WifiEvent = 'WifiEvent', // 连接WiFi事件，后台通讯用
   StopEvent = 'StopEvent',
   ElectricEvent = 'ElectricEvent',
   StatusEvent = 'StatusEvent',

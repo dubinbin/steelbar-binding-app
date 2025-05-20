@@ -3,7 +3,6 @@ import { router, usePathname } from 'expo-router';
 import {
   BatteryEmpty,
   BatteryFull,
-  BatteryHigh,
   BatteryLow,
   BatteryMedium,
   Gear,
@@ -20,8 +19,10 @@ import { GlobalSnackbarManager } from '../snackbar-global';
 
 import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
+import { eventBusKey } from '@/constants/event';
 import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
+import eventBus from '@/utils/eventBus';
 import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
 
 export const Header = () => {
@@ -39,9 +40,6 @@ export const Header = () => {
   // 当前选择的WiFi SSID, 用于连接WiFi中间临时存储
   const currentSelectedWifi = useRef<string>('');
 
-  // 当前连接的WiFi SSID
-  const [currentConnectWifiSSID, setCurrentConnectWifiSSID] = useState<string>('');
-
   // 获取当前连接的WiFi SSID 并监听App状态 当App状态变为active时 获取当前连接的WiFi SSID
   useEffect(() => {
     fetchCurrentConnectWifiSSID();
@@ -50,6 +48,28 @@ export const Header = () => {
     const screenListener = AppState.addEventListener('change', fetchCurrentConnectWifiSSID);
 
     return () => screenListener.remove();
+  }, []);
+
+  // 监听WiFi连接状态, 当WiFi连接状态为false时, 设置当前连接的WiFi SSID为空 ,提示重新连接
+  useEffect(() => {
+    eventBus.subscribe(eventBusKey.WifiEvent, (data: { eConnect: boolean }) => {
+      if (!data.eConnect) {
+        setRobotStatus({
+          currentConnectWifiSSID: '',
+        });
+        GlobalActivityIndicatorManager.current?.show('WiFi连接失败，请重新连接...', 3000);
+      }
+    });
+
+    return () => {
+      eventBus.unsubscribe(eventBusKey.WifiEvent, (data: { eConnect: boolean }) => {
+        if (!data.eConnect) {
+          setRobotStatus({
+            currentConnectWifiSSID: '',
+          });
+        }
+      });
+    };
   }, []);
 
   const gotoSetting = () => {
@@ -78,15 +98,20 @@ export const Header = () => {
   const openWifiSetting = async () => {
     if (wifiPermission) {
       // 获取wifi列表
+      setWifiList([]);
       handleRefreshWifiList();
-      setWifiChooseListVisible(true);
+      setTimeout(() => {
+        setWifiChooseListVisible(true);
+      }, 100);
     }
   };
 
   // 获取当前连接的WiFi SSID
   const fetchCurrentConnectWifiSSID = async () => {
     const connectedWifiSSID = await WifiManager.getCurrentWifiSSID();
-    setCurrentConnectWifiSSID(connectedWifiSSID);
+    setRobotStatus({
+      currentConnectWifiSSID: connectedWifiSSID,
+    });
   };
 
   const handleConnectToSocketAgain = async () => {
@@ -173,7 +198,9 @@ export const Header = () => {
       });
       // 重新连接socket
       handleConnectToSocketAgain();
-      setCurrentConnectWifiSSID(currentSelectedWifi.current);
+      setRobotStatus({
+        currentConnectWifiSSID: currentSelectedWifi.current,
+      });
     } catch (error) {
       console.log(error);
       GlobalActivityIndicatorManager.current?.hide();
@@ -230,7 +257,7 @@ export const Header = () => {
                       <Icon source="wifi" size={20} />
                       <Text className="text-md ml-2 text-gray-800">{item.SSID}</Text>
                     </View>
-                    {currentConnectWifiSSID === item.SSID ? (
+                    {robotStatus.currentConnectWifiSSID === item.SSID ? (
                       <Text className="text-md text-gray-800">已连接</Text>
                     ) : (
                       <TouchableOpacity
@@ -247,7 +274,8 @@ export const Header = () => {
                 );
               }}
               ListEmptyComponent={
-                <View className="flex flex-row items-center justify-center">
+                <View className="mb-5 flex flex-row items-center justify-center gap-2">
+                  <Icon source="wifi-off" size={16} />
                   <Text className="text-gray-800">暂无可以连接的WiFi</Text>
                 </View>
               }
@@ -280,7 +308,7 @@ export const Header = () => {
           onPress={openWifiSetting}>
           <WifiHigh size={24} weight="bold" />
           <Text className="text-sm text-gray-800">
-            {currentConnectWifiSSID ? currentConnectWifiSSID : '连接WiFi'}
+            {robotStatus.currentConnectWifiSSID ? robotStatus.currentConnectWifiSSID : '连接WiFi'}
           </Text>
         </TouchableOpacity>
 

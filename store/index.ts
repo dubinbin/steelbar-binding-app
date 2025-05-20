@@ -24,6 +24,8 @@ interface State {
     rebootState: RebootState;
     changeState: ChangeState;
     electric: number;
+    wifiConnectStatus: boolean;
+    currentConnectWifiSSID: string;
   };
   setRobotStatus: (newInfo: Partial<State['robotStatus']>) => void;
   userInfo: {
@@ -90,6 +92,8 @@ export const useStore = create<State>((set) => ({
     downState: DownState.finish, // 机器人下降状态
     rebootState: RebootState.finish, // 机器复位状态
     changeState: ChangeState.finish, // 机器变轨状态
+    wifiConnectStatus: false, // WiFi连接状态
+    currentConnectWifiSSID: '', // WiFi连接SSID
   },
   data_inspect: {
     overage_num: 0, // 卷丝余量

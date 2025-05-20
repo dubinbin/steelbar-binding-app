@@ -20,7 +20,7 @@ import { SocketManage } from '@/utils/socketManage';
 // 这个组件主要做一些初始化功能
 export const Bootstrap = () => {
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
-  const { setCanLoginInfo, canLoginInfo, robotStatus } = useStore((state) => state);
+  const { setCanLoginInfo, canLoginInfo, robotStatus, setRobotStatus } = useStore((state) => state);
 
   useEffect(() => {
     databaseInit();
@@ -35,9 +35,21 @@ export const Bootstrap = () => {
       sendCmd(cmd);
     });
 
+    eventBus.subscribe(eventBusKey.WifiEvent, (data: { eConnect: boolean }) => {
+      setRobotStatus({
+        wifiConnectStatus: data.eConnect,
+      });
+    });
+
     return () => {
       eventBus.unsubscribe(eventBusKey.SendCmdEvent, (cmd: Command) => {
         sendCmd(cmd);
+      });
+
+      eventBus.unsubscribe(eventBusKey.WifiEvent, (data: { eConnect: boolean }) => {
+        setRobotStatus({
+          wifiConnectStatus: data.eConnect,
+        });
       });
     };
   }, []);

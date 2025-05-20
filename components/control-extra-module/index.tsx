@@ -44,6 +44,7 @@ export const ControlExtraModule = () => {
       SocketManage.getInstance().disconnectSocket();
       setTimeout(() => {
         globalGetConnect();
+        // 10s后重新连接
       }, 10000);
     }
   };
