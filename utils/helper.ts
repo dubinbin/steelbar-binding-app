@@ -56,3 +56,13 @@ export const globalGetConnect = async () => {
 export const sendCmdDispatch = (cmd: Command) => {
   eventBus.publish(eventBusKey.SendCmdEvent, cmd);
 };
+export const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timeout: NodeJS.Timeout;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};

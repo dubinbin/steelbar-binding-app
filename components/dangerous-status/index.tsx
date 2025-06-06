@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { Button, Icon, Portal } from 'react-native-paper';
+import { Button, Icon, Portal, TouchableRipple } from 'react-native-paper';
 
 import { Command } from '@/constants/command';
 import useStore from '@/store';
@@ -28,7 +28,12 @@ export const DangerousStatus = () => {
           onLongPress={releaseDangerStatus}>
           <View className="flex flex-row items-center justify-center">
             <Icon source="hand-okay" size={24} color="#ffffff" />
-            <Text className="ml-2 text-2xl text-white">解除危险状态</Text>
+            <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+              <View className="flex flex-col items-center">
+                <Text className="ml-2 text-2xl text-white">解除危险状态</Text>
+                <Text className="ml-2 text-sm text-white">(长按解除危险状态)</Text>
+              </View>
+            </TouchableRipple>
           </View>
         </Button>
       </View>

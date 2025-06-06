@@ -34,7 +34,7 @@ const Home = () => {
         <View className="flex w-[26%]">
           <StatusBox />
         </View>
-        <View className="flex w-[37%] flex-row">
+        <View className="flex h-[95%] w-[37%] flex-row">
           <View className="relative mx-auto flex w-[95%] flex-col justify-between gap-y-5">
             <ControlBar />
           </View>

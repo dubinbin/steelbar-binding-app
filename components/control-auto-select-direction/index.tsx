@@ -8,7 +8,8 @@ import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
-import { sendCmdDispatch } from '@/utils/helper';
+import { debounce, sendCmdDispatch } from '@/utils/helper';
+import { TouchableRipple } from 'react-native-paper';
 
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;
@@ -92,7 +93,7 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
     // });
   };
 
-  const switchLeftOrRight = (direction: DIRECTION) => {
+  const switchLeftOrRight = debounce((direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
       // 左右移动要等变轨完成
       if (robotStatus.changeState === ChangeState.finish) {
@@ -103,7 +104,7 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
         sendCmdDispatch(Command.goRight);
       }
     }
-  };
+  }, 400);
 
   const switchTop = (isPressed: boolean) => {
     if (isPressed) {
@@ -128,24 +129,28 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
   return (
     <View className="relative mt-12 flex flex-row items-center justify-center gap-x-5">
       <View className="absolute left-0 top-0 h-full w-full flex-col items-center justify-center gap-y-10">
-        <TouchableOpacity
-          className="-top-[30px]"
-          onPressIn={() => switchTop(true)}
-          onPressOut={() => switchTop(false)}>
+        <TouchableRipple
+          centered
+          style={{ top: -30 }}
+          className="rounded-full px-2 py-2"
+          borderless
+          rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/top-arrow.png')}
             style={{ width: 50, height: 50 }}
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPressIn={() => switchDown(true)}
-          onPressOut={() => switchDown(false)}
-          className="top-[30px]">
+        </TouchableRipple>
+        <TouchableRipple
+          centered
+          style={{ top: 30 }}
+          className="rounded-full px-2 py-2"
+          borderless
+          rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/down-arrow.png')}
             style={{ width: 50, height: 50 }}
           />
-        </TouchableOpacity>
+        </TouchableRipple>
       </View>
 
       {/*  */}
@@ -168,22 +173,30 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
       </View>
 
       <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">
-        <TouchableOpacity
+        <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.LEFT)}
-          className="-left-[30px]">
+          centered
+          style={{ left: -30 }}
+          className="rounded-full px-2 py-2"
+          borderless
+          rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/left-arrow.png')}
             style={{ width: 50, height: 50 }}
           />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </TouchableRipple>
+        <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.RIGHT)}
-          className="-right-[30px]">
+          centered
+          style={{ left: 30 }}
+          className="rounded-full px-2 py-2"
+          borderless
+          rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/right-arrow.png')}
             style={{ width: 50, height: 50 }}
           />
-        </TouchableOpacity>
+        </TouchableRipple>
       </View>
     </View>
   );
