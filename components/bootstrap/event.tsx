@@ -75,8 +75,14 @@ export const EventHandler = () => {
 
     eventBus.subscribe(eventBusKey.ChangeEvent, ({ eState }: { eState: ChangeState }) => {
       if (eState === ChangeState.move) {
+        setRobotStatus({
+          changeState: eState,
+        });
         GlobalActivityIndicatorManager.current?.show('变轨中...', 0);
       } else {
+        setRobotStatus({
+          changeState: eState,
+        });
         GlobalActivityIndicatorManager.current?.hide();
       }
     });

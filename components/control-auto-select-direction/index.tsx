@@ -130,6 +130,7 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
     <View className="relative mt-12 flex flex-row items-center justify-center gap-x-5">
       <View className="absolute left-0 top-0 h-full w-full flex-col items-center justify-center gap-y-10">
         <TouchableRipple
+          onPress={() => switchTop(true)}
           centered
           style={{ top: -30 }}
           className="rounded-full px-2 py-2"
@@ -141,6 +142,7 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
           />
         </TouchableRipple>
         <TouchableRipple
+          onPress={() => switchDown(true)}
           centered
           style={{ top: 30 }}
           className="rounded-full px-2 py-2"

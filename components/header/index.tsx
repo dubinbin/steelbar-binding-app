@@ -180,26 +180,25 @@ export const Header = () => {
 
   // 刷新WiFi列表
   const handleRefreshWifiList = async () => {
-    try {
-      const loadWifiList = await WifiManager.loadWifiList();
+    const loadWifiList = await WifiManager.loadWifiList();
 
-      // 根据SSID去重
-      const uniqueSSIDs = new Map();
-      loadWifiList.forEach((wifi) => {
-        // 只保留有效的SSID，并且只保留每个SSID的第一个遇到的项
-        if (wifi.SSID && wifi.SSID !== '(hidden SSID)' && !uniqueSSIDs.has(wifi.SSID)) {
-          uniqueSSIDs.set(wifi.SSID, wifi);
-        }
-      });
-
-      const filteredWifiList = Array.from(uniqueSSIDs.values()).slice(0, 5);
-      if (filteredWifiList.length > 0) {
-        setWifiList(filteredWifiList);
+    // 根据SSID去重
+    const uniqueSSIDs = new Map();
+    loadWifiList.forEach((wifi) => {
+      // 只保留有效的SSID，并且只保留每个SSID的第一个遇到的项
+      if (
+        wifi.SSID &&
+        wifi.SSID !== '(hidden SSID)' &&
+        !uniqueSSIDs.has(wifi.SSID) &&
+        wifi.SSID.indexOf(GlobalConst.wifiName) !== -1
+      ) {
+        uniqueSSIDs.set(wifi.SSID, wifi);
       }
-    } catch (error) {
-      GlobalSnackbarManager.current?.show({
-        content: '刷新WiFi列表失败',
-      });
+    });
+
+    const filteredWifiList = Array.from(uniqueSSIDs.values()).slice(0, 5);
+    if (filteredWifiList.length > 0) {
+      setWifiList(filteredWifiList);
     }
   };
 
