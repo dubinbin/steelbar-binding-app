@@ -119,7 +119,7 @@ export default function Login() {
                   《钢筋绑扎机器人用户手册》
                 </Text>
               </View>
-              <WebView source={{ uri: 'https://www.baidu.com' }} />
+              <Text className="text-center text-lg">Coming soon...</Text>
             </View>
             <View className="bottom-4 flex h-1/5 items-center justify-center">
               <Button
