@@ -9,7 +9,8 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "node -e \"const fs=require('fs'),path=require('path');try{const lightningPath=path.join(__dirname,'node_modules','lightningcss');const arm64Path=path.join(__dirname,'node_modules','lightningcss-darwin-arm64','lightningcss.darwin-arm64.node');const x64Path=path.join(__dirname,'node_modules','lightningcss-darwin-x64','lightningcss.darwin-x64.node');const targetArm64=path.join(lightningPath,'lightningcss.darwin-arm64.node');const targetX64=path.join(lightningPath,'lightningcss.darwin-x64.node');[arm64Path,x64Path].forEach((src,i)=>{const target=i?targetX64:targetArm64;if(fs.existsSync(src)){try{if(fs.existsSync(target))fs.unlinkSync(target);fs.symlinkSync(src,target);console.log('✅ Created',path.basename(target))}catch(e){console.log('⚠️ Symlink failed for',path.basename(target))}}});console.log('✅ Lightningcss setup complete')}catch(e){console.log('⚠️ Lightningcss setup skipped:',e.message)}\" || true"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -27,7 +28,6 @@
     "expo-screen-orientation": "~8.1.7",
     "expo-sqlite": "~15.2.14",
     "expo-status-bar": "~2.2.3",
-    "lightningcss-darwin-arm64": "^1.30.1",
     "nativewind": "^4.0.1",
     "phosphor-react-native": "^2.3.1",
     "react": "19.0.0",
@@ -50,6 +50,9 @@
     "@typescript-eslint/parser": "^7.7.0",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^12.0.1",
+    "lightningcss": "^1.30.1",
+    "lightningcss-darwin-arm64": "^1.30.1",
+    "lightningcss-darwin-x64": "^1.30.1",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
@@ -58,6 +61,11 @@
   "eslintConfig": {
     "extends": "universe/native",
     "root": true
+  },
+  "overrides": {
+    "lightningcss": "^1.30.1",
+    "lightningcss-darwin-arm64": "^1.30.1",
+    "lightningcss-darwin-x64": "^1.30.1"
   },
   "private": true,
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"

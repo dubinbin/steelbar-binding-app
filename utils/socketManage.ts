@@ -17,6 +17,7 @@ import {
   RebootEvent,
   DownEvent,
   WifiEvent,
+  GunErrorEvent,
 } from './events';
 import { showNotifier } from './notifier';
 
@@ -157,6 +158,9 @@ export class SocketManage {
           case GlobalConst.id:
             ConnectDeviceInfo.id = listStr?.[2];
             eventBus.publish(new IdEvent(listStr?.[2]).eventName, new IdEvent(listStr?.[2]).data);
+            break;
+          case GlobalConst.gunErrorEvent:
+            eventBus.publish(new GunErrorEvent(1).eventName, new GunErrorEvent(1).data);
             break;
           case GlobalConst.electric:
             const temp = parseFloat(listStr?.[2]);

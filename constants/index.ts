@@ -26,6 +26,7 @@ export enum GlobalConst {
   ultrasound = 'ultrasonic', //超声波,0关1开,下同
   strip = 'antiFallLaser', //防坠激光
   prevention = 'autoFindPoint', //自动寻点
+  gunErrorEvent = 'gunError:1',
 }
 
 ///语言类型

@@ -105,6 +105,18 @@ export class NodeEvent {
   }
 }
 
+// 枪械错误
+export class GunErrorEvent {
+  public eventName: eventBusKey;
+  public data;
+  constructor(eError: number) {
+    this.eventName = eventBusKey.GunErrorEvent;
+    this.data = {
+      eError,
+    };
+  }
+}
+
 // 节点激光范围
 export class NodeChangeEvent {
   public eventName: eventBusKey;
