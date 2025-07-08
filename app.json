@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "钢筋绑扎机器人",
+    "name": "钢筋绑扎机器人dev",
     "slug": "tyings",
     "version": "1.0.0",
     "scheme": "tyings",
@@ -55,7 +55,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tyings.app"
+      "bundleIdentifier": "com.tyings.appdev"
     },
     "android": {
       "adaptiveIcon": {
@@ -65,7 +65,7 @@
       "permissions": [
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.tyings.app"
+      "package": "com.tyings.appdev"
     },
     "extra": {
       "router": {},

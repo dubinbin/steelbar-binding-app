@@ -12,12 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import { Button, Checkbox, Icon, Modal, Portal } from 'react-native-paper';
-import { WebView } from 'react-native-webview';
 
 import { Header } from '@/components/header';
-import { GlobalSnackbarManager } from '@/components/snackbar-global';
 import { storage_config } from '@/constants';
 import useStore from '@/store';
+import { showNotifier } from '@/utils/notifier';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -32,22 +31,31 @@ export default function Login() {
 
   const login = async () => {
     if (username === '' || password === '') {
-      GlobalSnackbarManager.current?.show({
-        content: '用户名和密码不能为空',
+      showNotifier({
+        title: '用户名和密码不能为空',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
 
     if (username !== canLoginInfo.name || password !== canLoginInfo.password) {
-      GlobalSnackbarManager.current?.show({
-        content: '用户名或密码错误',
+      showNotifier({
+        title: '用户名或密码错误',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
 
     if (!hasReadGuide) {
-      GlobalSnackbarManager.current?.show({
-        content: '请先阅读用户手册并知悉该手册',
+      showNotifier({
+        title: '请先阅读用户手册并知悉该手册',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -67,9 +75,11 @@ export default function Login() {
       }
     }
 
-    GlobalSnackbarManager.current?.show({
-      content: '登录成功',
-      action: null,
+    showNotifier({
+      title: '登录成功',
+      type: 'success',
+      duration: 3000,
+      onPress: () => {},
     });
     router.replace('/(home)');
   };

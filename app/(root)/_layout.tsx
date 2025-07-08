@@ -1,8 +1,12 @@
+import { useKeepAwake } from 'expo-keep-awake';
 import { Stack } from 'expo-router';
 import '@/global.css';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect } from 'react';
+
 export default function RootLayout() {
+  useKeepAwake();
+
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
   }, []);

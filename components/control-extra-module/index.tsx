@@ -2,13 +2,13 @@ import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { SelectJumpCount } from '../select-jump-count';
-import { GlobalSnackbarManager } from '../snackbar-global';
 
 import { DownState, RebootState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore, { initWorkParams } from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { globalGetConnect, sendCmdDispatch } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
 import { SocketManage } from '@/utils/socketManage';
 
 export const ControlExtraModule = () => {
@@ -16,8 +16,11 @@ export const ControlExtraModule = () => {
 
   const isInLockedMode = () => {
     if (robotStatus.currentMode === ROBOT_CURRENT_MODE.LOCKED) {
-      GlobalSnackbarManager.current?.show({
-        content: '锁止模式下，无法进行操作',
+      showNotifier({
+        title: '锁止模式下，无法进行操作',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return true;
     }
@@ -30,8 +33,11 @@ export const ControlExtraModule = () => {
     }
 
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点模式下，无法进行复位',
+      showNotifier({
+        title: '自动寻点模式下，无法进行复位',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -55,8 +61,11 @@ export const ControlExtraModule = () => {
     }
 
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点模式下，无法进行机器人下降',
+      showNotifier({
+        title: '自动寻点模式下，无法进行机器人下降',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -69,8 +78,11 @@ export const ControlExtraModule = () => {
     }
 
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点模式下，无法进行绑扎机重启',
+      showNotifier({
+        title: '自动寻点模式下，无法进行绑扎机重启',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }

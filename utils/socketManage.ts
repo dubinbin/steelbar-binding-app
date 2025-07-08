@@ -18,9 +18,9 @@ import {
   DownEvent,
   WifiEvent,
 } from './events';
+import { showNotifier } from './notifier';
 
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
-import { GlobalSnackbarManager } from '@/components/snackbar-global';
 import { GlobalConst, TyingState } from '@/constants';
 import { Command } from '@/constants/command';
 
@@ -224,14 +224,22 @@ export class SocketManage {
       if (ConnectDeviceInfo.connectStatus && this.socket) {
         this.socket.write(fd);
       } else {
-        GlobalSnackbarManager.current?.show({
-          content: 'socket is not connected',
+        showNotifier({
+          title: 'socket没有正确连接',
+          message: '请检查网络连接',
+          type: 'error',
+          duration: 3000,
+          onPress: () => {},
         });
         console.error('socket is not connected');
       }
     } catch (error) {
-      GlobalSnackbarManager.current?.show({
-        content: `writeData error ${error}`,
+      showNotifier({
+        title: `writeData error ${error}`,
+        message: '请检查网络连接',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       console.error('writeData error', error);
     }
@@ -345,8 +353,12 @@ export class SocketManage {
       console.log(`尝试重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
 
       // 通知用户正在重连
-      GlobalSnackbarManager.current?.show({
-        content: `网络连接已断开，正在尝试重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
+      showNotifier({
+        title: `网络连接已断开，正在尝试重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
+        message: '',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
 
       // 延迟重连，避免立即重连可能导致的问题
@@ -356,8 +368,12 @@ export class SocketManage {
     } else {
       console.error('重连失败，已达到最大尝试次数');
       // 通知用户连接已断开
-      GlobalSnackbarManager.current?.show({
-        content: '网络连接已断开，请检查网络设置',
+      showNotifier({
+        title: '网络连接已断开',
+        message: '请检查网络设置',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
 
       // 发布WiFi断开事件

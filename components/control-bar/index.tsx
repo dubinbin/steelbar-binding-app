@@ -6,12 +6,12 @@ import { ControlAutoSelectDirection } from '../control-auto-select-direction';
 import { ControlExtraModule } from '../control-extra-module';
 import { ControlManualControl } from '../control-manual-control';
 import { ControlSegmented } from '../control-segmented';
-import { GlobalSnackbarManager } from '../snackbar-global';
 
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { sendCmdDispatch } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
 
 export const ControlBar = () => {
   const { robotStatus, workParams, setRobotStatus } = useStore((state) => state);
@@ -22,8 +22,11 @@ export const ControlBar = () => {
   // 点击开始
   const startTyping = () => {
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点模式下，无法进行操作',
+      showNotifier({
+        title: '自动寻点模式下，无法进行操作',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -40,8 +43,11 @@ export const ControlBar = () => {
           sendCmdDispatch(Command.jumpLashed);
           break;
         default:
-          GlobalSnackbarManager.current?.show({
-            content: '当前绑扎模式不支持',
+          showNotifier({
+            title: '当前绑扎模式不支持',
+            type: 'error',
+            duration: 3000,
+            onPress: () => {},
           });
           break;
       }
@@ -92,7 +98,7 @@ export const ControlBar = () => {
                 <Button
                   className="absolute right-0 top-1"
                   mode="text"
-                  icon="chevron-up"
+                  icon="chevron-down"
                   onPress={() => setShowMore(false)}>
                   <Text className="text-lg font-normal">收起</Text>
                 </Button>

@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
-import { GlobalSnackbarManager } from '../snackbar-global';
 import { EventHandler } from './event';
 
 import { GlobalConst, storage_config } from '@/constants';
@@ -15,6 +14,7 @@ import useStore from '@/store';
 import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 import eventBus from '@/utils/eventBus';
 import { delayed, globalGetConnect } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
 import { SocketManage } from '@/utils/socketManage';
 
 // 这个组件主要做一些初始化功能
@@ -60,6 +60,22 @@ export const Bootstrap = () => {
     return () => screenListener.remove();
   }, []);
 
+  useEffect(() => {
+    eventBus.subscribe(eventBusKey.GunErrorEvent, () => {
+      showNotifier({
+        title: '钢筋绑扎枪故障',
+        message: '请检查钢筋绑扎枪状态是否正确',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
+      });
+    });
+
+    return () => {
+      eventBus.unsubscribe(eventBusKey.GunErrorEvent, () => {});
+    };
+  }, []);
+
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
     switch (nextAppState) {
       // active 相当于 Flutter 中的 resumed - 应用在前台可见且活跃
@@ -97,8 +113,11 @@ export const Bootstrap = () => {
 
   const sendCmd = (cmd: Command) => {
     if (robotStatus.robotDangerStatus) {
-      GlobalSnackbarManager.current?.show({
-        content: '机器人处于软急停状态，无法发送命令',
+      showNotifier({
+        title: '机器人处于软急停状态，无法发送命令',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -107,8 +126,11 @@ export const Bootstrap = () => {
     if (socket.isConnected()) {
       socket.writeData(`${GlobalConst.forwardCmd}${cmd}`);
     } else {
-      GlobalSnackbarManager.current?.show({
-        content: '机器人未连接，无法发送命令',
+      showNotifier({
+        title: '机器人未连接，无法发送命令',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   };

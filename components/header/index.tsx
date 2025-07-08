@@ -33,6 +33,7 @@ import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import eventBus from '@/utils/eventBus';
 import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
 
 // Wi-Fi 密码存储键
 const WIFI_PASSWORDS_STORAGE_KEY = 'wifi_passwords';
@@ -210,8 +211,12 @@ export const Header = () => {
 
           // 如果切换到的不是机器人WiFi，提示用户
           if (currentSSID.indexOf(GlobalConst.wifiName) === -1) {
-            GlobalSnackbarManager.current?.show({
-              content: `已切换到 ${currentSSID}，但这可能不是机器人WiFi`,
+            showNotifier({
+              title: `已切换到 ${currentSSID}`,
+              message: '但这可能不是机器人WiFi',
+              type: 'info',
+              duration: 3000,
+              onPress: () => {},
             });
           }
         }
@@ -223,7 +228,7 @@ export const Header = () => {
           });
         }
       } catch (error) {
-        console.error('WiFi状态检查失败:', error);
+        console.log('WiFi状态检查失败:', error);
       }
     };
 
@@ -256,8 +261,12 @@ export const Header = () => {
     setWifiList([]);
 
     // 显示断联提示
-    GlobalSnackbarManager.current?.show({
-      content: `${reason}，请重新连接WiFi`,
+    showNotifier({
+      title: `${reason}`,
+      message: '请重新连接WiFi',
+      type: 'error',
+      duration: 3000,
+      onPress: () => {},
     });
 
     // 如果有之前连接的WiFi，记录日志
@@ -282,8 +291,8 @@ export const Header = () => {
     try {
       const savedPassword = savedWifiPasswords[ssid];
       if (!savedPassword) {
-        GlobalSnackbarManager.current?.show({
-          content: '没有找到保存的密码',
+        showNotifier({
+          title: '没有找到保存的密码',
         });
         return;
       }
@@ -297,8 +306,11 @@ export const Header = () => {
       });
 
       GlobalActivityIndicatorManager.current?.hide();
-      GlobalSnackbarManager.current?.show({
-        content: `自动重连 ${ssid} 成功`,
+      showNotifier({
+        title: `自动重连 ${ssid} 成功`,
+        type: 'success',
+        duration: 3000,
+        onPress: () => {},
       });
 
       // 重新连接socket
@@ -306,8 +318,11 @@ export const Header = () => {
     } catch (error) {
       console.error('自动重连失败:', error);
       GlobalActivityIndicatorManager.current?.hide();
-      GlobalSnackbarManager.current?.show({
-        content: `自动重连 ${ssid} 失败，请手动连接`,
+      showNotifier({
+        title: `自动重连 ${ssid} 失败，请手动连接`,
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   };
@@ -340,8 +355,11 @@ export const Header = () => {
       // 检查WiFi权限
       await getWifiPermission();
       if (!wifiPermission) {
-        GlobalSnackbarManager.current?.show({
-          content: '需要WiFi权限才能搜索网络',
+        showNotifier({
+          title: '需要WiFi权限才能搜索网络',
+          type: 'error',
+          duration: 3000,
+          onPress: () => {},
         });
         return;
       }
@@ -352,8 +370,11 @@ export const Header = () => {
       await handleRefreshWifiList('auto');
     } catch (error: any) {
       console.error('打开WiFi设置失败:', error?.message || 'Unknown error');
-      GlobalSnackbarManager.current?.show({
-        content: '打开WiFi设置失败，请重试',
+      showNotifier({
+        title: '打开WiFi设置失败，请重试',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   };
@@ -433,8 +454,11 @@ export const Header = () => {
             updateWifiCache(loadWifiList, 'system');
           }
 
-          GlobalSnackbarManager.current?.show({
-            content: `强制扫描失败，使用${dataSource}`,
+          showNotifier({
+            title: `强制扫描失败，使用${dataSource}`,
+            type: 'error',
+            duration: 3000,
+            onPress: () => {},
           });
         }
       }
@@ -466,8 +490,11 @@ export const Header = () => {
       } else {
         setWifiList([]);
         if (type === 'manual') {
-          GlobalSnackbarManager.current?.show({
-            content: `未找到机器人WiFi，数据来源: ${dataSource}`,
+          showNotifier({
+            title: `未找到机器人WiFi，数据来源: ${dataSource}`,
+            type: 'error',
+            duration: 3000,
+            onPress: () => {},
           });
         }
       }
@@ -476,8 +503,11 @@ export const Header = () => {
       setWifiList([]);
 
       if (type === 'manual') {
-        GlobalSnackbarManager.current?.show({
-          content: 'WiFi获取失败，请检查权限设置',
+        showNotifier({
+          title: 'WiFi获取失败，请检查权限设置',
+          type: 'error',
+          duration: 3000,
+          onPress: () => {},
         });
       }
     }
@@ -516,8 +546,11 @@ export const Header = () => {
   // 使用新密码连接
   const connectWithNewPassword = async () => {
     if (currentSelectedWifi.current === '' || wifiPassword.length === 0) {
-      GlobalSnackbarManager.current?.show({
-        content: '密码不能为空 或 未选择WiFi',
+      showNotifier({
+        title: '密码不能为空 或 未选择WiFi',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -543,8 +576,11 @@ export const Header = () => {
 
       await WifiManager.connectToProtectedSSID(currentSelectedWifi.current, password, true, false);
 
-      GlobalSnackbarManager.current?.show({
-        content: '连接成功',
+      showNotifier({
+        title: '连接成功',
+        type: 'success',
+        duration: 3000,
+        onPress: () => {},
       });
 
       // 重新连接socket
@@ -556,8 +592,11 @@ export const Header = () => {
     } catch (error) {
       console.log(error);
       GlobalActivityIndicatorManager.current?.hide();
-      GlobalSnackbarManager.current?.show({
-        content: '连接失败,请检查密码是否正确或者当前Wi-Fi是否正常',
+      showNotifier({
+        title: '连接失败,请检查密码是否正确或者当前Wi-Fi是否正常',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   };

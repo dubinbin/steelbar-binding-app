@@ -6,6 +6,7 @@ import { DefaultTheme, PaperProvider } from 'react-native-paper';
 import GlobalActivityIndicatorComponent from '@/components/activity-indicator-global';
 import { Bootstrap } from '@/components/bootstrap';
 import GlobalDialogComponent from '@/components/global-dialog';
+import GlobalNotifierComponent from '@/components/notifier-global';
 import GlobalSnackbarComponent from '@/components/snackbar-global';
 
 const theme = {
@@ -29,6 +30,7 @@ export default function RootLayout() {
       <GlobalDialogComponent />
       <GlobalSnackbarComponent />
       <GlobalActivityIndicatorComponent />
+      <GlobalNotifierComponent />
     </PaperProvider>
   );
 }

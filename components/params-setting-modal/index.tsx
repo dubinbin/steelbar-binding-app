@@ -3,10 +3,9 @@ import { useState, useRef } from 'react';
 import { Alert, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Icon, Modal, Portal, Switch, Text, TextInput } from 'react-native-paper';
 
-import { GlobalSnackbarManager } from '../snackbar-global';
-
 import { GlobalConst, InputPara, workParamsRange } from '@/constants';
 import useStore from '@/store';
+import { showNotifier } from '@/utils/notifier';
 import { SocketManage } from '@/utils/socketManage';
 
 interface ParamsSettingModalProps {
@@ -28,8 +27,12 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
   const sendData = (fClass: string, fData: number) => {
     if (robotStatus.robotDangerStatus) {
-      GlobalSnackbarManager.current?.show({
-        content: '机器人处于软急停状态，无法发送命令',
+      showNotifier({
+        title: '机器人处于软急停状态',
+        message: '请检查机器人是否处于软急停状态',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -38,8 +41,12 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
     if (socket.isConnected()) {
       socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}`);
     } else {
-      GlobalSnackbarManager.current?.show({
-        content: '机器人未连接，无法发送命令',
+      showNotifier({
+        title: '机器人未连接',
+        message: '请检查机器人是否连接',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   };
@@ -157,8 +164,11 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
   ///开关超声波
   const changeUltrasound = (fValue: boolean) => {
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点开启，无法开启超声波',
+      showNotifier({
+        title: '自动寻点开启，无法开启超声波',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }
@@ -173,8 +183,11 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
   ///开关防坠激光
   const changeAntiFallLaser = (fValue: boolean) => {
     if (workParams.auto_find_point) {
-      GlobalSnackbarManager.current?.show({
-        content: '自动寻点开启，无法开启防坠激光',
+      showNotifier({
+        title: '自动寻点开启，无法开启防坠激光',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
       return;
     }

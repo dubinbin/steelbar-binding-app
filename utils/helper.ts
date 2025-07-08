@@ -3,9 +3,9 @@ import WifiManager from 'react-native-wifi-reborn';
 
 import { ConnectDeviceInfo } from './connectDeviceInfo';
 import eventBus from './eventBus';
+import { showNotifier } from './notifier';
 import { SocketManage } from './socketManage';
 
-import { GlobalSnackbarManager } from '@/components/snackbar-global';
 import { Command } from '@/constants/command';
 import { eventBusKey } from '@/constants/event';
 
@@ -35,20 +35,32 @@ export const globalGetConnect = async () => {
           // 连接socket
           socket.connectSocket();
         } else {
-          GlobalSnackbarManager.current?.show({
-            content: '缺少WiFi IP 或 port',
+          showNotifier({
+            title: '缺少WiFi IP 或 port',
+            message: '',
+            type: 'error',
+            duration: 3000,
+            onPress: () => {},
           });
         }
       }
     } else {
-      GlobalSnackbarManager.current?.show({
-        content: '没有连接到WiFi',
+      showNotifier({
+        title: '没有连接到WiFi',
+        message: '',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
       });
     }
   } catch (error) {
     console.error('error', error);
-    GlobalSnackbarManager.current?.show({
-      content: '获取网络状态失败',
+    showNotifier({
+      title: '获取网络状态失败',
+      message: '',
+      type: 'error',
+      duration: 3000,
+      onPress: () => {},
     });
   }
 };

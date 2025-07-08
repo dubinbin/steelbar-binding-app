@@ -2,13 +2,12 @@ import { Image } from 'expo-image';
 import { View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
-import { GlobalSnackbarManager } from '../snackbar-global';
-
 import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
 import { debounce, sendCmdDispatch } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
 
 export const ControlManualControl = () => {
   const { robotStatus } = useStore((state) => state);
@@ -20,8 +19,11 @@ export const ControlManualControl = () => {
       if (robotStatus.changeState === ChangeState.finish) {
         sendCmdDispatch(Command.goLeft);
       } else {
-        GlobalSnackbarManager.current?.show({
-          content: '变轨中，请等待',
+        showNotifier({
+          title: '变轨中，请等待',
+          type: 'error',
+          duration: 3000,
+          onPress: () => {},
         });
       }
     } else if (direction === DIRECTION.RIGHT) {
@@ -33,20 +35,16 @@ export const ControlManualControl = () => {
 
   const switchTop = (isPressed: boolean) => {
     if (isPressed) {
-      console.error('goForward');
       sendCmdDispatch(Command.goForward);
     } else {
-      console.error('release');
       sendCmdDispatch(Command.release);
     }
   };
 
   const switchDown = (isPressed: boolean) => {
     if (isPressed) {
-      console.error('goBack');
       sendCmdDispatch(Command.goBack);
     } else {
-      console.error('release');
       sendCmdDispatch(Command.release);
     }
   };
