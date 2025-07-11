@@ -64,6 +64,8 @@ interface State {
   }[];
   setDebugLog: (newInfo: { time: string; msg: string }) => void;
   clearDebugLog: () => void;
+  logStatus: 'stop' | 'start';
+  setLogStatus: (newInfo: 'stop' | 'start') => void;
 }
 
 export const initWorkParams = {
@@ -159,9 +161,16 @@ export const useStore = create<State>((set) => ({
     })),
   debugLog: [],
   setDebugLog: (newInfo: { time: string; msg: string }) =>
-    set((state) => ({
-      debugLog: [newInfo, ...state.debugLog].slice(0, 200), // 只保留最新的200条记录
-    })),
+    set((state) => {
+      if (state.logStatus === 'start') {
+        return {
+          debugLog: [newInfo, ...state.debugLog].slice(0, 200), // 只保留最新的200条记录
+        };
+      }
+      return {};
+    }),
+  logStatus: 'start',
+  setLogStatus: (newInfo: 'stop' | 'start') => set((state) => ({ logStatus: newInfo })),
   clearDebugLog: () => set((state) => ({ debugLog: [] })),
 }));
 
