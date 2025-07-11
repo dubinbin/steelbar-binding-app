@@ -18,12 +18,16 @@ import {
   DownEvent,
   WifiEvent,
   GunErrorEvent,
+  BackBoardEvent,
+  FrontBoardEvent,
+  MksEvent,
 } from './events';
 import { showNotifier } from './notifier';
 
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
 import { GlobalConst, TyingState } from '@/constants';
 import { Command } from '@/constants/command';
+import useStore from '@/store';
 
 export class SocketManage {
   private static instance: SocketManage;
@@ -154,6 +158,12 @@ export class SocketManage {
       const commandName = listStr[1];
 
       if (commandPrefix === GlobalConst.forwardUp) {
+        // 正确使用 store 写入调试日志
+        const { setDebugLog } = useStore.getState();
+        setDebugLog({
+          time: new Date().toISOString(),
+          msg: `收到命令: ${eventData}`,
+        });
         switch (commandName) {
           case GlobalConst.id:
             ConnectDeviceInfo.id = listStr?.[2];
@@ -214,8 +224,25 @@ export class SocketManage {
             const temp10 = parseInt(listStr?.[2], 10);
             eventBus.publish(new DownEvent(temp10).eventName, new DownEvent(temp10).data);
             break;
-          default:
+          case GlobalConst.backBoard:
+            const temp11 = String(listStr?.[2]);
+            eventBus.publish(
+              new BackBoardEvent(temp11).eventName,
+              new BackBoardEvent(eventData).data
+            );
             break;
+          case GlobalConst.frontBoard:
+            const temp12 = String(listStr?.[2]);
+            eventBus.publish(
+              new FrontBoardEvent(temp12).eventName,
+              new FrontBoardEvent(eventData).data
+            );
+            break;
+          case GlobalConst.mks:
+            const temp13 = String(listStr?.[2]);
+            eventBus.publish(new MksEvent(temp13).eventName, new MksEvent(eventData).data);
+            break;
+          default:
         }
       }
     } catch (error) {
@@ -235,7 +262,6 @@ export class SocketManage {
           duration: 3000,
           onPress: () => {},
         });
-        console.error('socket is not connected');
       }
     } catch (error) {
       showNotifier({
@@ -245,7 +271,6 @@ export class SocketManage {
         duration: 3000,
         onPress: () => {},
       });
-      console.error('writeData error', error);
     }
   }
 

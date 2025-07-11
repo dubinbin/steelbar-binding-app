@@ -15,4 +15,17 @@ export enum Command {
   softStop = 13, // 软急停
   release = 14, // 释放前后移动按钮
   loginSuccess = 15, // 登录成功命令
+  // 无线控制测试指令
+  wifiTest = 18, // 无线控制测试
+  sliderLeftTest = 19, //横移 左
+  sliderRightTest = 20, //横移 右
+  holdDownTest = 21, //支撑杆 下
+  holdUpTest = 22, //支撑杆 上
+  legsDownTest = 23, //辅助腿、杆 下
+  legsUpTest = 24, //辅助腿、杆 上
+  gunDownTest = 25, //枪 下
+  gunUpTest = 26, //枪 上
+  lunForward = 27, //轮子前进
+  lunBackward = 28, //轮子后退
+  lunStop = 29, //轮子停止
 }

@@ -2,7 +2,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
-import { Button, Card, Icon, TextInput } from 'react-native-paper';
+import { Button, Card, Icon, TextInput, TouchableRipple } from 'react-native-paper';
 
 import { Header } from '@/components/header';
 import { storage_config } from '@/constants';
@@ -21,6 +21,10 @@ export default function Setting() {
     router.replace('/(root)/(login)');
   };
 
+  const openTestModule = () => {
+    router.push('/(root)/(setting)/test-module');
+  };
+
   return (
     <View className="flex w-full">
       <Header />
@@ -35,6 +39,15 @@ export default function Setting() {
               height: 300,
             }}
           />
+          <TouchableRipple
+            onLongPress={openTestModule}
+            style={{
+              width: 300,
+              height: 300,
+            }}
+            className="absolute bottom-0 left-0 right-0 top-0 z-10 opacity-0">
+            <Text>测试模块</Text>
+          </TouchableRipple>
         </View>
 
         <View className="w-[50%] ">

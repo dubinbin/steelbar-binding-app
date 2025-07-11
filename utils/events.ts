@@ -186,3 +186,36 @@ export class ErrorEvent {
     };
   }
 }
+
+export class MksEvent {
+  public eventName: eventBusKey;
+  public data;
+  constructor(eMks: string) {
+    this.eventName = eventBusKey.MksEvent;
+    this.data = {
+      eMks,
+    };
+  }
+}
+
+export class BackBoardEvent {
+  public eventName: eventBusKey;
+  public data;
+  constructor(eBackBoard: string) {
+    this.eventName = eventBusKey.BackBoardEvent;
+    this.data = {
+      eBackBoard,
+    };
+  }
+}
+
+export class FrontBoardEvent {
+  public eventName: eventBusKey;
+  public data;
+  constructor(eFrontBoard: string) {
+    this.eventName = eventBusKey.FrontBoardEvent;
+    this.data = {
+      eFrontBoard,
+    };
+  }
+}

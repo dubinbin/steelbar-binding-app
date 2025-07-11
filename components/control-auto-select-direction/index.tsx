@@ -108,20 +108,16 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
 
   const switchTop = (isPressed: boolean) => {
     if (isPressed) {
-      console.error('goForward');
       sendCmdDispatch(Command.goForward);
     } else {
-      console.error('release');
       sendCmdDispatch(Command.release);
     }
   };
 
   const switchDown = (isPressed: boolean) => {
     if (isPressed) {
-      console.error('goBack');
       sendCmdDispatch(Command.goBack);
     } else {
-      console.error('release');
       sendCmdDispatch(Command.release);
     }
   };

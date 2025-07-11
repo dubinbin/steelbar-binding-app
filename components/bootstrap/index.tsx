@@ -20,7 +20,9 @@ import { SocketManage } from '@/utils/socketManage';
 // 这个组件主要做一些初始化功能
 export const Bootstrap = () => {
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
-  const { setCanLoginInfo, canLoginInfo, robotStatus, setRobotStatus } = useStore((state) => state);
+  const { setCanLoginInfo, canLoginInfo, robotStatus, setRobotStatus, setDebugLog } = useStore(
+    (state) => state
+  );
 
   useEffect(() => {
     databaseInit();
@@ -119,18 +121,29 @@ export const Bootstrap = () => {
         duration: 3000,
         onPress: () => {},
       });
+      setDebugLog({
+        time: new Date().toISOString(),
+        msg: `发送命令失败，机器人处于软急停状态，无法发送命令: ${cmd} `,
+      });
       return;
     }
     const socket = SocketManage.getInstance();
-
     if (socket.isConnected()) {
       socket.writeData(`${GlobalConst.forwardCmd}${cmd}`);
+      setDebugLog({
+        time: new Date().toISOString(),
+        msg: `成功发送命令: ${cmd}`,
+      });
     } else {
       showNotifier({
         title: '机器人未连接，无法发送命令',
         type: 'error',
         duration: 3000,
         onPress: () => {},
+      });
+      setDebugLog({
+        time: new Date().toISOString(),
+        msg: `发送命令失败，机器人未连接，无法发送命令: ${cmd} `,
       });
     }
   };

@@ -15,5 +15,8 @@ export enum eventBusKey {
   DownEvent = 'DownEvent',
   ErrorEvent = 'ErrorEvent',
   SendCmdEvent = 'SendCmdEvent',
-  GunErrorEvent = 'gunError:1',
+  GunErrorEvent = 'gunError',
+  MksEvent = 'MksEvent',
+  BackBoardEvent = 'BackBoardEvent',
+  FrontBoardEvent = 'FrontBoardEvent',
 }

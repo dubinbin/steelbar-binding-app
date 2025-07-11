@@ -6,6 +6,7 @@ import eventBus from './eventBus';
 import { showNotifier } from './notifier';
 import { SocketManage } from './socketManage';
 
+import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
 import { eventBusKey } from '@/constants/event';
 
@@ -20,9 +21,8 @@ export const globalGetConnect = async () => {
       const getGatewayIp = await NetworkInfo.getGatewayIPAddress();
       if (
         connectedWifiSSID !== '' &&
-        getGatewayIp !== null
-        //  &&
-        // connectedWifiSSID.indexOf(GlobalConst.wifiName) > -1
+        getGatewayIp !== null &&
+        connectedWifiSSID.indexOf(GlobalConst.wifiName) > -1
       ) {
         ConnectDeviceInfo.setWifiIp(getGatewayIp);
         const socket = SocketManage.getInstance();
@@ -54,7 +54,6 @@ export const globalGetConnect = async () => {
       });
     }
   } catch (error) {
-    console.error('error', error);
     showNotifier({
       title: '获取网络状态失败',
       message: '',

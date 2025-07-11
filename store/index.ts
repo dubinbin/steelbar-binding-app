@@ -58,6 +58,12 @@ interface State {
   }[];
   setDataInspect: (newInfo: Partial<State['data_inspect']>) => void;
   setErrorGroup: (newInfo: { time: string; errorId: number }) => void;
+  debugLog: {
+    time: string;
+    msg: string;
+  }[];
+  setDebugLog: (newInfo: { time: string; msg: string }) => void;
+  clearDebugLog: () => void;
 }
 
 export const initWorkParams = {
@@ -151,6 +157,12 @@ export const useStore = create<State>((set) => ({
     set((state) => ({
       errorGroup: [newInfo, ...state.errorGroup],
     })),
+  debugLog: [],
+  setDebugLog: (newInfo: { time: string; msg: string }) =>
+    set((state) => ({
+      debugLog: [newInfo, ...state.debugLog].slice(0, 200), // 只保留最新的200条记录
+    })),
+  clearDebugLog: () => set((state) => ({ debugLog: [] })),
 }));
 
 export default useStore;
