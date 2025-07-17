@@ -43,4 +43,4 @@ export const showInfo = (title: string, message?: string, duration = 3000) => {
     type: 'info',
     duration,
   });
-}; 
+};

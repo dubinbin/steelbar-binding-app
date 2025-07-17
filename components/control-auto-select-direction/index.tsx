@@ -1,15 +1,16 @@
 import { Image } from 'expo-image';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 // import { Icon } from 'react-native-paper';
 
 // import { GlobalSnackbarManager } from '../snackbar-global';
+
+import { TouchableRipple } from 'react-native-paper';
 
 import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
 import { debounce, sendCmdDispatch } from '@/utils/helper';
-import { TouchableRipple } from 'react-native-paper';
 
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;

@@ -13,7 +13,7 @@ import database from '@/model/manager';
 import useStore from '@/store';
 import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 import eventBus from '@/utils/eventBus';
-import { delayed, globalGetConnect } from '@/utils/helper';
+import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
 import { SocketManage } from '@/utils/socketManage';
 
@@ -64,6 +64,7 @@ export const Bootstrap = () => {
 
   useEffect(() => {
     eventBus.subscribe(eventBusKey.GunErrorEvent, () => {
+      sendCmdDispatch(Command.lockUp);
       showNotifier({
         title: '钢筋绑扎枪故障',
         message: '请检查钢筋绑扎枪状态是否正确',

@@ -1,15 +1,11 @@
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
 import { View, FlatList } from 'react-native';
 import { Button, Card, Text } from 'react-native-paper';
 
 import { Header } from '@/components/header';
 import { Command } from '@/constants/command';
-import { eventBusKey } from '@/constants/event';
 import useStore from '@/store';
-import eventBus from '@/utils/eventBus';
 import { sendCmdDispatch } from '@/utils/helper';
-import { showNotifier } from '@/utils/notifier';
 
 export default function TestModule() {
   const router = useRouter();
@@ -17,41 +13,6 @@ export default function TestModule() {
   const goback = () => {
     router.back();
   };
-
-  useEffect(() => {
-    eventBus.subscribe(eventBusKey.BackBoardEvent, ({ eBackBoard }: { eBackBoard: string }) => {
-      showNotifier({
-        title: `BackBoard: ${eBackBoard}`,
-        type: 'info',
-        duration: 5000,
-        onPress: () => {},
-      });
-    });
-
-    eventBus.subscribe(eventBusKey.FrontBoardEvent, ({ eFrontBoard }: { eFrontBoard: string }) => {
-      showNotifier({
-        title: `FrontBoard: ${eFrontBoard}`,
-        type: 'info',
-        duration: 5000,
-        onPress: () => {},
-      });
-    });
-
-    eventBus.subscribe(eventBusKey.MksEvent, ({ eMks }: { eMks: string }) => {
-      showNotifier({
-        title: `Mks: ${eMks}`,
-        type: 'info',
-        duration: 5000,
-        onPress: () => {},
-      });
-    });
-
-    return () => {
-      eventBus.unsubscribe(eventBusKey.BackBoardEvent, () => {});
-      eventBus.unsubscribe(eventBusKey.FrontBoardEvent, () => {});
-      eventBus.unsubscribe(eventBusKey.MksEvent, () => {});
-    };
-  }, []);
 
   const openDebugMode = () => {
     sendCmdDispatch(Command.wifiTest);
