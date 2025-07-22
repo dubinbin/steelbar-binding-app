@@ -138,7 +138,7 @@ export default function Login() {
                 icon="check"
                 className="w-full px-3"
                 onPress={closeGuideDialog}>
-                <Text className="text-lg font-bold">{t('common.i_know')}</Text>
+                <Text className="text-lg font-bold">{t('common.iKnow')}</Text>
               </Button>
             </View>
           </Modal>
