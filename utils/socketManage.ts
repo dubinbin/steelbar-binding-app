@@ -27,6 +27,7 @@ import { showNotifier } from './notifier';
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
 import { GlobalConst, TyingState } from '@/constants';
 import { Command } from '@/constants/command';
+import i18n from '@/i18n/i18n';
 import useStore from '@/store';
 
 export class SocketManage {
@@ -101,7 +102,7 @@ export class SocketManage {
 
         // 发布WiFi连接成功事件
         eventBus.publish(new WifiEvent(true).eventName, new WifiEvent(true).data);
-        GlobalActivityIndicatorManager.current?.show('WiFi连接成功');
+        GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.connectSuccess'));
       });
       this.socket = socket;
 
@@ -128,7 +129,7 @@ export class SocketManage {
       });
     } catch (error) {
       console.error('Unable to connect:', error);
-      GlobalActivityIndicatorManager.current?.show('WiFi连接失败');
+      GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.wificonnectfailed'));
       ConnectDeviceInfo.disConnect();
     }
   }
@@ -139,7 +140,7 @@ export class SocketManage {
 
     ConnectDeviceInfo.disConnect();
     eventBus.publish(new WifiEvent(false).eventName, new WifiEvent(false).eventName);
-    GlobalActivityIndicatorManager.current?.show('wifi连接已断开');
+    GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.wifiDisconnected'));
   }
 
   onData(event: string) {
@@ -256,8 +257,8 @@ export class SocketManage {
         this.socket.write(fd);
       } else {
         showNotifier({
-          title: 'socket没有正确连接',
-          message: '请检查网络连接',
+          title: i18n.t('wifi.socketNotConnected'),
+          message: i18n.t('wifi.checkNetworkConnection'),
           type: 'error',
           duration: 3000,
           onPress: () => {},
@@ -266,7 +267,7 @@ export class SocketManage {
     } catch (error) {
       showNotifier({
         title: `writeData error ${error}`,
-        message: '请检查网络连接',
+        message: i18n.t('wifi.checkNetworkConnection'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -383,7 +384,7 @@ export class SocketManage {
 
       // 通知用户正在重连
       showNotifier({
-        title: `网络连接已断开，正在尝试重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
+        title: `${i18n.t('wifi.networkDisconnected')} (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
         message: '',
         type: 'error',
         duration: 3000,
@@ -398,8 +399,8 @@ export class SocketManage {
       console.error('重连失败，已达到最大尝试次数');
       // 通知用户连接已断开
       showNotifier({
-        title: '网络连接已断开',
-        message: '请检查网络设置',
+        title: i18n.t('wifi.wifiDisconnected'),
+        message: i18n.t('wifi.wifiDisconnected'),
         type: 'error',
         duration: 3000,
         onPress: () => {},

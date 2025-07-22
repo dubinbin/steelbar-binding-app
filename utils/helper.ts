@@ -1,3 +1,4 @@
+
 import { NetworkInfo } from 'react-native-network-info';
 import WifiManager from 'react-native-wifi-reborn';
 
@@ -9,7 +10,7 @@ import { SocketManage } from './socketManage';
 import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
 import { eventBusKey } from '@/constants/event';
-
+import i18n from '@/i18n/i18n';
 export const delayed = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -36,7 +37,7 @@ export const globalGetConnect = async () => {
           socket.connectSocket();
         } else {
           showNotifier({
-            title: '缺少WiFi IP 或 port',
+            title: i18n.t('wifi.missingIpOrPort'),
             message: '',
             type: 'error',
             duration: 3000,
@@ -46,7 +47,7 @@ export const globalGetConnect = async () => {
       }
     } else {
       showNotifier({
-        title: '没有连接到WiFi',
+        title: i18n.t('wifi.noWifiConnected'),
         message: '',
         type: 'error',
         duration: 3000,
@@ -55,7 +56,7 @@ export const globalGetConnect = async () => {
     }
   } catch (error) {
     showNotifier({
-      title: '获取网络状态失败',
+      title: i18n.t('wifi.networkStatusFailed'),
       message: '',
       type: 'error',
       duration: 3000,

@@ -1,4 +1,5 @@
 import { createRef, forwardRef, useImperativeHandle, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 type GlobalDialogConfig = {
@@ -13,6 +14,7 @@ export const GlobalDialogManager: React.RefObject<{
 } | null> = createRef();
 
 const GlobalDialog = forwardRef((_: any, ref: any) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [config, setConfig] = useState<GlobalDialogConfig>({
     title: '',
@@ -52,8 +54,8 @@ const GlobalDialog = forwardRef((_: any, ref: any) => {
           <Text>{config.content}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={hideDialog}>取消</Button>
-          <Button onPress={checkedCallback}>确定</Button>
+          <Button onPress={hideDialog}>{t('common.cancel')}</Button>
+          <Button onPress={checkedCallback}>{t('common.confirm')}</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

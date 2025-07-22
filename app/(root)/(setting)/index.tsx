@@ -1,16 +1,40 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
-import { Button, Card, Icon, TextInput, TouchableRipple } from 'react-native-paper';
+import { Button, List, SegmentedButtons, TextInput, TouchableRipple } from 'react-native-paper';
 
 import { Header } from '@/components/header';
 import { storage_config } from '@/constants';
+import i18n from '@/i18n/i18n';
 import useStore from '@/store';
 
 export default function Setting() {
   const { canLoginInfo } = useStore((state) => state);
+  const [language, setLanguage] = useState<'zh' | 'en' | 'hk'>('en');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
+  const languageInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_LANGUAGE);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    languageInfo.getItem().then((value) => {
+      if (value) {
+        setLanguage(value as 'zh' | 'en' | 'hk');
+      } else {
+        saveLanguage('en');
+      }
+    });
+  }, []);
+
+  const saveLanguage = (value: 'zh' | 'en' | 'hk') => {
+    setLanguage(value);
+    languageInfo.setItem(value);
+    i18n.changeLanguage(value);
+  };
+
   const goback = () => {
     router.back();
   };
@@ -50,65 +74,98 @@ export default function Setting() {
           </TouchableRipple>
         </View>
 
-        <View className="w-[50%] ">
-          <Card className="px-5 py-6">
-            <View className="flex flex-row items-center justify-center">
-              <View className="mb-2 flex flex-row items-center justify-center">
-                <Icon source="account-circle-outline" size={22} />
-                <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">用户信息</Text>
-              </View>
-            </View>
-            <ScrollView className="h-72 lg:h-96">
-              <View className="gap-5">
-                <TextInput
-                  label="用户名"
-                  value={canLoginInfo.name}
-                  disabled
-                  style={{ backgroundColor: '#01264142' }}
-                  keyboardType="numeric"
+        <ScrollView className="w-[50%] overflow-scroll">
+          <View className="overflow-hidden rounded-xl ">
+            <List.AccordionGroup
+              expandedId={expandedId ?? undefined}
+              onAccordionPress={(v) => {
+                if (expandedId === v) {
+                  setExpandedId(null);
+                } else {
+                  setExpandedId(v as string);
+                }
+              }}>
+              <List.Accordion title={t('setting.userInfo')} id="1">
+                <ScrollView className="h-48 lg:h-64">
+                  <View className="gap-5 bg-white px-5 py-6">
+                    <TextInput
+                      label={t('setting.username')}
+                      value={canLoginInfo.name}
+                      disabled
+                      style={{ backgroundColor: '#01264142' }}
+                      keyboardType="numeric"
+                    />
+
+                    <TextInput
+                      label={t('setting.companyAddress')}
+                      value={canLoginInfo.position}
+                      disabled
+                      style={{ backgroundColor: '#01264142' }}
+                    />
+
+                    <TextInput
+                      label={t('setting.companyName')}
+                      value={canLoginInfo.company}
+                      disabled
+                      style={{ backgroundColor: '#01264142' }}
+                    />
+
+                    <TextInput
+                      label={t('setting.phoneNumber')}
+                      value={canLoginInfo.number}
+                      disabled
+                      style={{ backgroundColor: '#01264142' }}
+                    />
+                  </View>
+                </ScrollView>
+              </List.Accordion>
+            </List.AccordionGroup>
+          </View>
+
+          <View className="h-5" />
+          <View className="overflow-hidden rounded-xl ">
+            <List.AccordionGroup
+              expandedId={expandedId ?? undefined}
+              onAccordionPress={(v) => {
+                if (expandedId === v) {
+                  setExpandedId(null);
+                } else {
+                  setExpandedId(v as string);
+                }
+              }}>
+              <List.Accordion title={t('setting.language')} id="2">
+                <SegmentedButtons
+                  value={language}
+                  style={{ backgroundColor: '#fff', padding: 10 }}
+                  onValueChange={(value) => saveLanguage(value as 'zh' | 'en' | 'hk')}
+                  buttons={[
+                    {
+                      value: 'zh',
+                      label: '简体中文',
+                    },
+                    {
+                      value: 'en',
+                      label: 'English',
+                    },
+                    {
+                      value: 'hk',
+                      label: '繁體中文',
+                    },
+                  ]}
                 />
+              </List.Accordion>
+            </List.AccordionGroup>
+          </View>
+          <View className="mt-5 flex flex-row items-center justify-center gap-10">
+            <Button mode="contained" icon="logout" className="px-3" onPress={logout}>
+              {t('common.logout')}
+            </Button>
 
-                <TextInput
-                  label="用户ID"
-                  value={canLoginInfo.id.toString()}
-                  disabled
-                  style={{ backgroundColor: '#01264142' }}
-                />
-
-                <TextInput
-                  label="公司地址"
-                  value={canLoginInfo.position}
-                  disabled
-                  style={{ backgroundColor: '#01264142' }}
-                />
-
-                <TextInput
-                  label="公司名称"
-                  value={canLoginInfo.company}
-                  disabled
-                  style={{ backgroundColor: '#01264142' }}
-                />
-
-                <TextInput
-                  label="联系电话"
-                  value={canLoginInfo.number}
-                  disabled
-                  style={{ backgroundColor: '#01264142' }}
-                />
-              </View>
-            </ScrollView>
-
-            <View className="mt-5 flex flex-row items-center justify-center gap-10">
-              <Button mode="contained" icon="logout" className="px-3" onPress={logout}>
-                退出登录
-              </Button>
-
-              <Button mode="outlined" icon="arrow-left" className="px-3" onPress={goback}>
-                返回
-              </Button>
-            </View>
-          </Card>
-        </View>
+            <Button mode="outlined" icon="arrow-left" className="px-3" onPress={goback}>
+              {t('common.back')}
+            </Button>
+          </View>
+        </ScrollView>
       </View>
     </View>
   );

@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
@@ -11,7 +12,7 @@ import { showNotifier } from '@/utils/notifier';
 
 export const ControlManualControl = () => {
   const { robotStatus } = useStore((state) => state);
-
+  const { t } = useTranslation();
   // 为什么不用switch 因为似乎switch对于里面再定义复杂逻辑会提示不能重复定义let/const等逻辑
   const switchLeftOrRight = debounce((direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
@@ -20,7 +21,7 @@ export const ControlManualControl = () => {
         sendCmdDispatch(Command.goLeft);
       } else {
         showNotifier({
-          title: '变轨中，请等待',
+          title: t('common.changingOrbitTips'),
           type: 'error',
           duration: 3000,
           onPress: () => {},

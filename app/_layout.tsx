@@ -8,6 +8,7 @@ import { Bootstrap } from '@/components/bootstrap';
 import GlobalDialogComponent from '@/components/global-dialog';
 import GlobalNotifierComponent from '@/components/notifier-global';
 import GlobalSnackbarComponent from '@/components/snackbar-global';
+import '@/i18n/i18n'; // 导入 i18n 配置
 
 const theme = {
   ...DefaultTheme,

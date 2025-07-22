@@ -1,6 +1,7 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
@@ -23,7 +24,7 @@ export const Bootstrap = () => {
   const { setCanLoginInfo, canLoginInfo, robotStatus, setRobotStatus, setDebugLog } = useStore(
     (state) => state
   );
-
+  const { t } = useTranslation();
   useEffect(() => {
     databaseInit();
     checkLogin();
@@ -66,8 +67,8 @@ export const Bootstrap = () => {
     eventBus.subscribe(eventBusKey.GunErrorEvent, () => {
       sendCmdDispatch(Command.lockUp);
       showNotifier({
-        title: '钢筋绑扎枪故障',
-        message: '请检查钢筋绑扎枪状态是否正确',
+        title: t('robot.gunError'),
+        message: t('robot.gunErrorTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -104,7 +105,7 @@ export const Bootstrap = () => {
 
   const restartConnect = async () => {
     if (!ConnectDeviceInfo.connectStatus) {
-      GlobalActivityIndicatorManager.current?.show('等待重新连接...', 0);
+      GlobalActivityIndicatorManager.current?.show(t('robot.waitingForReconnection'), 0);
 
       await delayed(2000);
 
@@ -117,7 +118,7 @@ export const Bootstrap = () => {
   const sendCmd = (cmd: Command) => {
     if (robotStatus.robotDangerStatus) {
       showNotifier({
-        title: '机器人处于软急停状态，无法发送命令',
+        title: t('errors.robotDangerStatusTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -137,7 +138,7 @@ export const Bootstrap = () => {
       });
     } else {
       showNotifier({
-        title: '机器人未连接，无法发送命令',
+        title: t('errors.robotUnconnectedTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},

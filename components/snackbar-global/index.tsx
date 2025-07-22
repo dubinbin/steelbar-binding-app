@@ -1,4 +1,5 @@
 import { createRef, forwardRef, useImperativeHandle, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Snackbar } from 'react-native-paper';
 
 type GlobalSnackbarConfig = {
@@ -13,10 +14,11 @@ export const GlobalSnackbarManager: React.RefObject<{
 } | null> = createRef();
 
 const GlobalSnackbar = forwardRef((_: any, ref: any) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [config, setConfig] = useState<GlobalSnackbarConfig>({
     content: '',
-    action: '确定',
+    action: t('common.confirm'),
     actionCallback: () => {},
   });
 
@@ -47,7 +49,7 @@ const GlobalSnackbar = forwardRef((_: any, ref: any) => {
       visible={visible}
       onDismiss={hideSnackbar}
       action={{
-        label: config?.action == null ? '确定' : config?.action,
+        label: config?.action == null ? t('common.confirm') : config?.action,
         textColor: '#ffffff',
         onPress: () => {
           hideSnackbar();

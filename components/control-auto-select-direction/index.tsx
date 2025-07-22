@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 // import { Icon } from 'react-native-paper';
 
@@ -11,14 +12,13 @@ import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
 import { debounce, sendCmdDispatch } from '@/utils/helper';
-
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;
 }
 
 export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirectionProps) => {
   const { robotStatus } = useStore((state) => state);
-
+  const { t } = useTranslation();
   const handlePlay = () => {
     // let count = 0;
     // let mutualExclusion = false;
@@ -160,12 +160,16 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
           {robotStatus.isWorking ? (
             <View className="flex h-[80px] w-[80px] flex-row items-center justify-center rounded-full bg-[#012641]">
               {/* <Icon source="pause" color="#ffffff" size={22} /> */}
-              <Text className="ml-1 text-center text-xl font-normal text-white">暂停</Text>
+              <Text className="ml-1 text-center text-xl font-normal text-white">
+                {t('common.pause')}
+              </Text>
             </View>
           ) : (
             <View className="flex h-[80px] w-[80px] flex-row items-center justify-center rounded-full bg-[#012641]">
               {/* <Icon source="play" color="#ffffff" size={22} /> */}
-              <Text className="ml-1 text-center text-xl font-normal text-white">开始</Text>
+              <Text className="ml-1 text-center text-xl font-normal text-white">
+                {t('common.start')}
+              </Text>
             </View>
           )}
         </View>

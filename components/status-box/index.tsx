@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
@@ -12,7 +13,7 @@ export const StatusBox = () => {
 
   const openSettingModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-
+  const { t } = useTranslation();
   return (
     <View className="w-[100%] flex-col items-center justify-end">
       <ParamsSettingModal visible={visible} onDismiss={hideModal} />
@@ -33,7 +34,7 @@ export const StatusBox = () => {
       />
 
       <Button icon="cog" mode="contained" style={{ width: '80%' }} onPress={openSettingModal}>
-        参数设置
+        {t('common.paramsSetting')}
       </Button>
     </View>
   );

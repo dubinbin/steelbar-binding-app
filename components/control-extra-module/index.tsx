@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
@@ -13,11 +14,11 @@ import { SocketManage } from '@/utils/socketManage';
 
 export const ControlExtraModule = () => {
   const { robotStatus, workParams, setWorkParams } = useStore((state) => state);
-
+  const { t } = useTranslation();
   const isInLockedMode = () => {
     if (robotStatus.currentMode === ROBOT_CURRENT_MODE.LOCKED) {
       showNotifier({
-        title: '锁止模式下，无法进行操作',
+        title: t('errors.lockModeTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -34,7 +35,7 @@ export const ControlExtraModule = () => {
 
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点模式下，无法进行复位',
+        title: t('errors.autoFindPointTips3'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -62,7 +63,7 @@ export const ControlExtraModule = () => {
 
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点模式下，无法进行机器人下降',
+        title: t('errors.autoFindPointTips2'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -79,7 +80,7 @@ export const ControlExtraModule = () => {
 
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点模式下，无法进行绑扎机重启',
+        title: t('errors.autoFindPointTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -95,13 +96,13 @@ export const ControlExtraModule = () => {
     <View className="relative flex w-full flex-row items-end justify-end">
       <View className="-bottom-[10px] flex gap-y-5">
         <Button icon="reload" mode="elevated" onPress={robotReboot}>
-          绑扎机重启
+          {t('common.tyingRobotRestart')}
         </Button>
         <Button icon="restart" mode="elevated" onPress={robotReset}>
-          机器复位
+          {t('common.machineRestart')}
         </Button>
         <Button icon="elevator-down" mode="elevated" onPress={robotDown}>
-          机器下降
+          {t('common.machineDown')}
         </Button>
       </View>
 

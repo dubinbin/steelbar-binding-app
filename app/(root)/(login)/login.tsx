@@ -2,6 +2,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Text,
   TextInput,
@@ -28,11 +29,11 @@ export default function Login() {
   const { width, height } = Dimensions.get('screen');
   const { canLoginInfo } = useStore((state) => state);
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
-
+  const { t } = useTranslation();
   const login = async () => {
     if (username === '' || password === '') {
       showNotifier({
-        title: '用户名和密码不能为空',
+        title: t('errors.emptyCredentials'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -42,7 +43,7 @@ export default function Login() {
 
     if (username !== canLoginInfo.name || password !== canLoginInfo.password) {
       showNotifier({
-        title: '用户名或密码错误',
+        title: t('errors.usernameOrPasswordError'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -52,7 +53,7 @@ export default function Login() {
 
     if (!hasReadGuide) {
       showNotifier({
-        title: '请先阅读用户手册并知悉该手册',
+        title: t('errors.readManual'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -76,7 +77,7 @@ export default function Login() {
     }
 
     showNotifier({
-      title: '登录成功',
+      title: t('common.loginSuccess'),
       type: 'success',
       duration: 3000,
       onPress: () => {},
@@ -126,7 +127,7 @@ export default function Login() {
               <View className="mb-2 flex flex-row items-center justify-center">
                 <Icon source="book-open-outline" size={22} />
                 <Text className="-top-[1px] ml-2 py-8 text-center text-2xl font-bold">
-                  《钢筋绑扎机器人用户手册》
+                  {t('common.guide_book')}
                 </Text>
               </View>
               <Text className="text-center text-lg">Coming soon...</Text>
@@ -137,7 +138,7 @@ export default function Login() {
                 icon="check"
                 className="w-full px-3"
                 onPress={closeGuideDialog}>
-                <Text className="text-lg font-bold">我知道了</Text>
+                <Text className="text-lg font-bold">{t('common.i_know')}</Text>
               </Button>
             </View>
           </Modal>
@@ -154,7 +155,7 @@ export default function Login() {
 
                     <TextInput
                       className="rounded-tl-2xl rounded-tr-2xl border-[0.5px] border-gray-500 py-5 pl-[50px]"
-                      placeholder="请输入用户名"
+                      placeholder={t('common.pleaseInputUsername')}
                       value={username}
                       onChangeText={(text) => setUsername(text)}
                     />
@@ -167,46 +168,44 @@ export default function Login() {
                     </View>
                     <TextInput
                       className="rounded-bl-2xl rounded-br-2xl border-[0.5px] border-gray-500 py-5 pl-[50px]"
-                      placeholder="请输入密码"
+                      placeholder={t('common.pleaseInputPassword')}
                       secureTextEntry
                       value={password}
                       onChangeText={(text) => setPassword(text)}
                     />
                   </View>
                 </KeyboardAvoidingView>
-                <View className="mt-5 flex flex-col items-start justify-center">
-                  <View className="flex flex-row items-center justify-center">
+                <View className="mt-5 flex flex-col items-start justify-center ">
+                  <View className="flex flex-row items-center justify-start">
                     <Checkbox.Android
                       status={rememberpsw ? 'checked' : 'unchecked'}
                       onPress={() => {
                         setRememberpsw(!rememberpsw);
                       }}
                     />
-                    <Text className="text-md -mt-0.5">下次启动时自动进入该账户</Text>
+                    <Text className="text-md -mt-0.5">{t('common.autoLogin')}</Text>
                   </View>
 
-                  <View className="flex flex-row items-center justify-center">
+                  <View className="flex flex-row items-center justify-start">
                     <Checkbox.Android
                       status={hasReadGuide ? 'checked' : 'unchecked'}
                       onPress={() => {
                         setHasReadGuide(!hasReadGuide);
                       }}
                     />
-                    <View className="-mt-0.5 flex flex-row items-center justify-center">
-                      <View className="text-md flex flex-row items-center justify-center">
-                        <Text>承诺已知悉</Text>
-                        <TouchableOpacity onPress={openGuideDialog}>
-                          <Text className=" text-blue-500">《钢筋绑扎机器人用户手册》</Text>
-                        </TouchableOpacity>
-                        <Text>的全部内容</Text>
-                      </View>
+                    <View className="flex flex-row items-center justify-start">
+                      <Text>{t('common.promise')}</Text>
+                      <TouchableOpacity onPress={openGuideDialog}>
+                        <Text className=" text-blue-500">{t('common.guide_book')}</Text>
+                      </TouchableOpacity>
+                      <Text className="text-md -mt-0.5">{t('common.promiseContent')}</Text>
                     </View>
                   </View>
                 </View>
 
                 <View className="mt-5 flex flex-row items-center justify-center gap-10">
                   <Button mode="contained" icon="login" className="w-full px-3" onPress={login}>
-                    <Text className="text-lg font-bold">登入</Text>
+                    <Text className="text-lg font-bold">{t('common.login')}</Text>
                   </Button>
                 </View>
               </View>

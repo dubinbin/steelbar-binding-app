@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
 
@@ -8,7 +9,7 @@ import { sendCmdDispatch } from '@/utils/helper';
 
 export const ControlSegmented = () => {
   const { robotStatus, setRobotStatus } = useStore((state) => state);
-
+  const { t } = useTranslation();
   const sendCmd = (mode: ROBOT_CURRENT_MODE) => {
     if (mode === ROBOT_CURRENT_MODE.LOCKED) {
       sendCmdDispatch(Command.lockUp);
@@ -38,7 +39,7 @@ export const ControlSegmented = () => {
         buttons={[
           {
             value: ROBOT_CURRENT_MODE.LOCKED,
-            label: '锁止',
+            label: t('common.lock'),
             icon: 'lock',
             checkedColor: '#ffffff',
             style: {
@@ -48,7 +49,7 @@ export const ControlSegmented = () => {
           },
           {
             value: ROBOT_CURRENT_MODE.MANUAL,
-            label: '手动',
+            label: t('common.manual'),
             icon: 'camera-control',
             checkedColor: '#ffffff',
             style: {
@@ -58,7 +59,7 @@ export const ControlSegmented = () => {
           },
           {
             value: ROBOT_CURRENT_MODE.AUTO,
-            label: '自动',
+            label: t('common.auto'),
             icon: 'robot-mower-outline',
             checkedColor: '#ffffff',
             style: {
@@ -87,7 +88,7 @@ export const ControlSegmented = () => {
           buttons={[
             {
               value: ROBOT_WORK_MODE.WITHOUT_BINDING,
-              label: '不扎',
+              label: t('common.noLashed'),
               icon: 'not-equal-variant',
               checkedColor: '#ffffff',
               style: {
@@ -99,7 +100,7 @@ export const ControlSegmented = () => {
             },
             {
               value: ROBOT_WORK_MODE.FULL_BINDING,
-              label: '满扎',
+              label: t('common.fullLashed'),
               icon: 'transit-connection',
               checkedColor: '#ffffff',
               style: {
@@ -111,7 +112,7 @@ export const ControlSegmented = () => {
             },
             {
               value: ROBOT_WORK_MODE.SKIP_BINDING,
-              label: '跳扎',
+              label: t('common.skipLashed'),
               icon: 'transit-skip',
               checkedColor: '#ffffff',
               style: {

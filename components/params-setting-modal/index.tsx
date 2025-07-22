@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Icon, Modal, Portal, Switch, Text, TextInput } from 'react-native-paper';
 
@@ -14,6 +15,7 @@ interface ParamsSettingModalProps {
 }
 
 export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalProps) => {
+  const { t } = useTranslation();
   const { workParams, setWorkParams, robotStatus } = useStore((state) => state);
   const editKey = useRef({
     key: '',
@@ -28,8 +30,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
   const sendData = (fClass: string, fData: number) => {
     if (robotStatus.robotDangerStatus) {
       showNotifier({
-        title: '机器人处于软急停状态',
-        message: '请检查机器人是否处于软急停状态',
+        title: t('errors.robotDangerStatusTips'),
+        message: t('errors.pleaseCheckTheRobotStatusIfItIsInSoftEmergencyStopStatus'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -42,8 +44,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
       socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}`);
     } else {
       showNotifier({
-        title: '机器人未连接',
-        message: '请检查机器人是否连接',
+        title: t('errors.robotUnconnectedTips'),
+        message: t('errors.robotNotConnected'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -53,7 +55,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
   const submitData = () => {
     if (workParams.auto_find_point) {
-      Alert.alert('自动寻点模式下，无法进行参数设置');
+      Alert.alert(t('errors.autoFindPointTips4'));
       return;
     }
 
@@ -64,8 +66,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
         Number(editKey.current.value) > workParams.inputOrbitMax)
     ) {
       Alert.alert(
-        '变轨激光范围超出范围',
-        `变轨激光范围超出范围，需要在${workParamsRange.orbitInputMin}mm~${workParams.inputOrbitMax}mm之间`
+        t('errors.trackLaserRangeExceedsRange'),
+        `${t('errors.trackLaserRangeExceedsRange')}，${t('common.needToSet')} ${workParamsRange.orbitInputMin}mm~${workParams.inputOrbitMax}mm ${t('common.between')}`
       );
       return;
     }
@@ -76,14 +78,14 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
         Number(editKey.current.value) > workParams.inputNodeMax)
     ) {
       Alert.alert(
-        '节点激光范围超出范围',
-        `节点激光范围超出范围，需要在${workParamsRange.nodeMin}mm~${workParams.inputNodeMax}mm之间`
+        t('errors.nodeLaserRangeExceedsRange'),
+        `${t('errors.nodeLaserRangeExceedsRange')}，${t('common.needToSet')} ${workParamsRange.nodeMin}mm~${workParams.inputNodeMax}mm ${t('common.between')}`
       );
       return;
     }
 
     if (editKey.current.value === '') {
-      Alert.alert('参数值不能为空');
+      Alert.alert(t('errors.parameterValueCannotBeEmpty'));
       return;
     }
 
@@ -120,8 +122,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
         const temp3 = parseInt(textValue, 10);
         if (temp3 < workParamsRange.inputMin || temp3 > workParamsRange.inputMax) {
           Alert.alert(
-            '上层钢筋直径超出范围',
-            `上层钢筋直径超出范围，需要在${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm之间`
+            t('errors.upperLayerRebarDiameterExceedsRange'),
+            `${t('errors.upperLayerRebarDiameterExceedsRange')}，${t('common.needToSet')} ${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm ${t('common.between')}`
           );
           return false;
         } else {
@@ -132,8 +134,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
         const temp4 = parseInt(textValue, 10);
         if (temp4 < workParamsRange.inputMin || temp4 > workParamsRange.inputMax) {
           Alert.alert(
-            '下层钢筋直径超出范围',
-            `下层钢筋直径超出范围，需要在${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm之间`
+            t('errors.lowerLayerRebarDiameterExceedsRange'),
+            `${t('errors.lowerLayerRebarDiameterExceedsRange')}，${t('common.between')} ${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm ${t('common.between')}`
           );
           return false;
         } else {
@@ -144,8 +146,8 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
         const temp5 = parseInt(textValue, 10);
         if (temp5 < workParamsRange.inputMin || temp5 > workParamsRange.inputMax) {
           Alert.alert(
-            '下层钢筋长度超出范围',
-            `下层钢筋长度超出范围，需要在${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm之间`
+            t('errors.lowerLayerRebarLengthExceedsRange'),
+            `${t('errors.lowerLayerRebarLengthExceedsRange')}，${t('common.needToSet')} ${workParamsRange.inputMin}mm~${workParamsRange.inputMax}mm ${t('common.between')}`
           );
           return false;
         } else {
@@ -165,7 +167,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
   const changeUltrasound = (fValue: boolean) => {
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点开启，无法开启超声波',
+        title: t('errors.autoFindPointTips6'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -184,7 +186,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
   const changeAntiFallLaser = (fValue: boolean) => {
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点开启，无法开启防坠激光',
+        title: t('errors.autoFindPointTips8'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -227,7 +229,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
           <View className="mb-4 flex flex-row items-center justify-between">
             <View className="my-1 flex flex-row items-center gap-2">
               <Icon source="cog" size={22} />
-              <Text className="mb-1 ml-2 text-xl font-bold">参数设置</Text>
+              <Text className="mb-1 ml-2 text-xl font-bold">{t('common.parameterSettings')}</Text>
             </View>
             <TouchableOpacity onPress={onDismiss}>
               <Icon source="close" size={22} />
@@ -236,11 +238,16 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
           <View className="h-[365px] gap-5">
             <TouchableOpacity
               onPress={() => {
-                openEditModal('track_laser_range', '变轨激光范围', 'mm', InputPara.orbitScopeMax);
+                openEditModal(
+                  'track_laser_range',
+                  t('common.trackLaserRange'),
+                  'mm',
+                  InputPara.orbitScopeMax
+                );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">变轨激光范围：</Text>
+                <Text className="text-md text-gray-800">{t('common.trackLaserRange')}：</Text>
                 <Text className="text-md ml-2 text-gray-800">{workParams.track_laser_range}</Text>
                 <Text className="ml-1 text-lg text-gray-800">mm</Text>
               </View>
@@ -249,11 +256,16 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
             <TouchableOpacity
               onPress={() => {
-                openEditModal('node_laser_range', '节点激光范围', 'mm', InputPara.nodeScopeMax);
+                openEditModal(
+                  'node_laser_range',
+                  t('common.nodeLaserRange'),
+                  'mm',
+                  InputPara.nodeScopeMax
+                );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">节点激光范围：</Text>
+                <Text className="text-md text-gray-800">{t('common.nodeLaserRange')}：</Text>
                 <Text className="text-md ml-2 text-gray-800">{workParams.node_laser_range}</Text>
                 <Text className="ml-1 text-lg text-gray-800">mm</Text>
               </View>
@@ -262,11 +274,18 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
             <TouchableOpacity
               onPress={() => {
-                openEditModal('upper_layer_diameter', '上层钢筋直径', 'mm', InputPara.topDiameter);
+                openEditModal(
+                  'upper_layer_diameter',
+                  t('common.upperLayerRebarDiameter'),
+                  'mm',
+                  InputPara.topDiameter
+                );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">上层钢筋直径：</Text>
+                <Text className="text-md text-gray-800">
+                  {t('common.upperLayerRebarDiameter')}：
+                </Text>
                 <Text className="text-md ml-2 text-gray-800">
                   {workParams.upper_layer_diameter}
                 </Text>
@@ -279,14 +298,16 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
               onPress={() => {
                 openEditModal(
                   'lower_steel_bar_length',
-                  '下层钢筋直径',
+                  t('common.lowerLayerRebarDiameter'),
                   'mm',
                   InputPara.downDiameter
                 );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">下层钢筋直径：</Text>
+                <Text className="text-md text-gray-800">
+                  {t('common.lowerLayerRebarDiameter')}：
+                </Text>
                 <Text className="text-md ml-2 text-gray-800">
                   {workParams.lower_steel_bar_length}
                 </Text>
@@ -297,11 +318,16 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
             <TouchableOpacity
               onPress={() => {
-                openEditModal('lower_layer_diameter', '下层钢筋', 'mm', InputPara.bottomDiameter);
+                openEditModal(
+                  'lower_layer_diameter',
+                  t('common.lowerLayerRebar'),
+                  'mm',
+                  InputPara.bottomDiameter
+                );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">下层钢筋：</Text>
+                <Text className="text-md text-gray-800">{t('common.lowerLayerRebar')}：</Text>
                 <Text className="text-md ml-2 text-gray-800">
                   {workParams.lower_layer_diameter}
                 </Text>
@@ -312,11 +338,16 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
 
             <TouchableOpacity
               onPress={() => {
-                openEditModal('binding_timeout', '绑扎延时', 'ms', InputPara.bottomTime);
+                openEditModal(
+                  'binding_timeout',
+                  t('common.bindingDelay'),
+                  'ms',
+                  InputPara.bottomTime
+                );
               }}
               className="flex flex-row items-center justify-between gap-1 rounded-lg bg-gray-200 px-5 py-3">
               <View className="flex flex-row items-center">
-                <Text className="text-md text-gray-800">绑扎延时：</Text>
+                <Text className="text-md text-gray-800">{t('common.bindingDelay')}：</Text>
                 <Text className="text-md ml-2 text-gray-800">{workParams.binding_timeout}</Text>
                 <Text className="ml-1 text-lg text-gray-800">ms</Text>
               </View>
@@ -332,7 +363,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
                   changeUltrasound(!workParams.ultrasonic_waves);
                 }}
               />
-              <Text className="text-md -ml-1 font-light">超声波</Text>
+              <Text className="text-md -ml-1 font-light">{t('common.ultrasonic')}</Text>
             </View>
 
             <View className="flex flex-row items-center justify-center gap-2">
@@ -342,7 +373,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
                   changeAntiFallLaser(!workParams.prevent_falling_laser);
                 }}
               />
-              <Text className="text-md -ml-1 font-light">防坠激光</Text>
+              <Text className="text-md -ml-1 font-light">{t('common.antiFallLaser')}</Text>
             </View>
 
             <View className="flex flex-row items-center justify-center gap-2">
@@ -352,7 +383,7 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
                   changePrevention(!workParams.auto_find_point);
                 }}
               />
-              <Text className="text-md -ml-1 font-light">自动寻点</Text>
+              <Text className="text-md -ml-1 font-light">{t('common.autoFindPoint')}</Text>
             </View>
           </View>
         </View>
@@ -397,10 +428,10 @@ export const ParamsSettingModal = ({ visible, onDismiss }: ParamsSettingModalPro
             onPress={() => {
               setEditModalVisible(false);
             }}>
-            取消
+            {t('common.cancel')}
           </Button>
 
-          <Button onPress={submitData}>确认</Button>
+          <Button onPress={submitData}>{t('common.confirm')}</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

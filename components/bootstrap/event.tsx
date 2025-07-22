@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 
@@ -11,7 +12,7 @@ export const EventHandler = () => {
   const { setRobotStatus, setWorkParams, setErrorGroup, errorGroup, setDataInspect } = useStore(
     (state) => state
   );
-
+  const { t } = useTranslation();
   useEffect(() => {
     eventBus.subscribe(eventBusKey.StopEvent, ({ eStop }: { eStop: boolean }) => {
       setRobotStatus({
@@ -78,7 +79,7 @@ export const EventHandler = () => {
         setRobotStatus({
           changeState: eState,
         });
-        GlobalActivityIndicatorManager.current?.show('变轨中...', 0);
+        GlobalActivityIndicatorManager.current?.show(t('robot.changingOrbit'), 0);
       } else {
         setRobotStatus({
           changeState: eState,
@@ -88,9 +89,8 @@ export const EventHandler = () => {
     });
 
     eventBus.subscribe(eventBusKey.RebootEvent, ({ eState }: { eState: RebootState }) => {
-      console.log('复位状态', eState);
       if (eState === RebootState.rebooting) {
-        GlobalActivityIndicatorManager.current?.show('正在复位...', 0);
+        GlobalActivityIndicatorManager.current?.show(t('robot.rebooting'), 0);
       } else {
         GlobalActivityIndicatorManager.current?.hide();
       }
@@ -98,7 +98,7 @@ export const EventHandler = () => {
 
     eventBus.subscribe(eventBusKey.DownEvent, ({ eState }: { eState: DownState }) => {
       if (eState === DownState.downing) {
-        GlobalActivityIndicatorManager.current?.show('正在下降...', 0);
+        GlobalActivityIndicatorManager.current?.show(t('robot.downing'), 0);
       } else {
         GlobalActivityIndicatorManager.current?.hide();
       }

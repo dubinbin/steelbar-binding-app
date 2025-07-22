@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
 import { Button, Card, Icon } from 'react-native-paper';
 
@@ -12,18 +13,17 @@ import useStore from '@/store';
 import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { sendCmdDispatch } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
-
 export const ControlBar = () => {
   const { robotStatus, workParams, setRobotStatus } = useStore((state) => state);
   const [showMore, setShowMore] = useState(false);
-
+  const { t } = useTranslation();
   const { height } = Dimensions.get('window');
 
   // 点击开始
   const startTyping = () => {
     if (workParams.auto_find_point) {
       showNotifier({
-        title: '自动寻点模式下，无法进行操作',
+        title: t('robot.autoFindPointTips'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -44,7 +44,7 @@ export const ControlBar = () => {
           break;
         default:
           showNotifier({
-            title: '当前绑扎模式不支持',
+            title: t('errors.currentBindingModeNotSupported'),
             type: 'error',
             duration: 3000,
             onPress: () => {},
@@ -64,7 +64,7 @@ export const ControlBar = () => {
       return (
         <View className="flex h-[180px] w-[150px] flex-row items-center justify-center gap-x-2">
           <Icon source="lock" size={22} />
-          <Text className="text-center text-xl font-normal text-black">锁止模式</Text>
+          <Text className="text-center text-xl font-normal text-black">{t('common.lockMode')}</Text>
         </View>
       );
     } else if (robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL) {
@@ -80,7 +80,9 @@ export const ControlBar = () => {
         <View className="mb-5 flex flex-col items-center">
           <View className="mb-2 mt-3 flex flex-row items-center justify-center">
             <Icon source="robot-happy-outline" size={22} />
-            <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">机器人操作</Text>
+            <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">
+              {t('common.robotOperation')}
+            </Text>
           </View>
           <ControlSegmented />
 
@@ -100,7 +102,7 @@ export const ControlBar = () => {
                   mode="text"
                   icon="chevron-down"
                   onPress={() => setShowMore(false)}>
-                  <Text className="text-lg font-normal">收起</Text>
+                  <Text className="text-lg font-normal">{t('common.collapse')}</Text>
                 </Button>
                 <ControlExtraModule />
               </View>
@@ -112,7 +114,7 @@ export const ControlBar = () => {
                 onPress={() => {
                   setShowMore(!showMore);
                 }}>
-                <Text>更多功能</Text>
+                <Text>{t('common.moreFeatures')}</Text>
               </Button>
             )}
           </View>

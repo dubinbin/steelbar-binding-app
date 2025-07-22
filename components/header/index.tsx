@@ -10,6 +10,7 @@ import {
   WifiHigh,
 } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   PermissionsAndroid,
   TouchableOpacity,
@@ -47,6 +48,8 @@ export const Header = () => {
   const [wifiPassword, setWifiPassword] = useState('');
   const segments = useSegments();
   const isLoginPage = segments.includes('(login)');
+  const isSettingPage = segments.includes('(setting)');
+  const { t } = useTranslation();
   // 连接WiFi密码对话框是否可见
   const [wifiPasswordDialogVisible, setWifiPasswordDialogVisible] = useState(false);
   const hideWifiPasswordDialog = () => setWifiPasswordDialogVisible(false);
@@ -102,13 +105,8 @@ export const Header = () => {
     }
 
     if (isCacheValid(timestamp, maxAge)) {
-      console.log(
-        `使用${source}缓存数据，剩余有效时间: ${Math.ceil((maxAge - (Date.now() - timestamp)) / 1000)}秒`
-      );
       return data;
     }
-
-    console.log(`${source}缓存已过期，需要重新获取`);
     return null;
   };
 
@@ -120,13 +118,11 @@ export const Header = () => {
       source,
     };
     setWifiCache(newCache);
-    console.log(`更新${source}缓存: ${data.length}个网络`);
   };
 
   // 清除过期缓存
   const clearExpiredCache = () => {
     if (wifiCache && !isCacheValid(wifiCache.timestamp, CACHE_CONFIG.MAX_CACHE_AGE)) {
-      console.log('清除过期缓存');
       setWifiCache(null);
     }
   };
@@ -155,7 +151,7 @@ export const Header = () => {
         setSavedWifiPasswords(JSON.parse(savedPasswords));
       }
     } catch (error) {
-      console.error('加载Wi-Fi密码失败', error);
+      console.error('loadSavedWifiPasswords error', error);
     }
   };
 
@@ -166,7 +162,7 @@ export const Header = () => {
       await wifiPasswordsStorage.setItem(JSON.stringify(newPasswords));
       setSavedWifiPasswords(newPasswords);
     } catch (error) {
-      console.error('保存Wi-Fi密码失败', error);
+      console.error('saveWifiPassword error', error);
     }
   };
 
@@ -199,12 +195,10 @@ export const Header = () => {
 
         // 如果之前有连接的WiFi，但现在获取不到SSID，说明断联了
         if (previousSSID && (!currentSSID || currentSSID === '')) {
-          console.log(`WiFi断联检测: 从 ${previousSSID} 断开`);
-          handleWifiDisconnected(`WiFi "${previousSSID}" 连接断开`);
+          handleWifiDisconnected(`WiFi "${previousSSID}" ${t('common.disconnected')}`);
         }
         // 如果检测到WiFi变化（切换到其他WiFi）
         else if (currentSSID && previousSSID && currentSSID !== previousSSID) {
-          console.log(`WiFi切换检测: 从 ${previousSSID} 切换到 ${currentSSID}`);
           setRobotStatus({
             currentConnectWifiSSID: currentSSID,
           });
@@ -212,8 +206,8 @@ export const Header = () => {
           // 如果切换到的不是机器人WiFi，提示用户
           if (currentSSID.indexOf(GlobalConst.wifiName) === -1) {
             showNotifier({
-              title: `已切换到 ${currentSSID}`,
-              message: '但这可能不是机器人WiFi',
+              title: `${t('wifi.switchWifi')} ${currentSSID}`,
+              message: t('wifi.notRobotWifi'),
               type: 'info',
               duration: 3000,
               onPress: () => {},
@@ -222,13 +216,12 @@ export const Header = () => {
         }
         // 如果之前没有连接，现在检测到有连接
         else if (!previousSSID && currentSSID) {
-          console.log(`WiFi连接检测: 连接到 ${currentSSID}`);
           setRobotStatus({
             currentConnectWifiSSID: currentSSID,
           });
         }
       } catch (error) {
-        console.log('WiFi状态检查失败:', error);
+        console.error('checkWifiStatus error', error);
       }
     };
 
@@ -263,7 +256,7 @@ export const Header = () => {
     // 显示断联提示
     showNotifier({
       title: `${reason}`,
-      message: '请重新连接WiFi',
+      message: t('wifi.reconnectWifi'),
       type: 'error',
       duration: 3000,
       onPress: () => {},
@@ -278,8 +271,8 @@ export const Header = () => {
     if (previousSSID && savedWifiPasswords[previousSSID]) {
       setTimeout(() => {
         GlobalSnackbarManager.current?.show({
-          content: `检测到 ${previousSSID} 的保存密码，是否自动重连？`,
-          action: '重连',
+          content: `${t('wifi.detected')} ${previousSSID} ${t('wifi.savedPassword')}，${t('wifi.autoConnect')}？`,
+          action: t('common.reconnect'),
           actionCallback: () => autoReconnectWifi(previousSSID),
         });
       }, 2000);
@@ -292,12 +285,12 @@ export const Header = () => {
       const savedPassword = savedWifiPasswords[ssid];
       if (!savedPassword) {
         showNotifier({
-          title: '没有找到保存的密码',
+          title: t('wifi.noSavedPassword'),
         });
         return;
       }
 
-      GlobalActivityIndicatorManager.current?.show(`正在自动重连 ${ssid}...`, 0);
+      GlobalActivityIndicatorManager.current?.show(`${t('wifi.autoReconnect')} ${ssid}...`, 0);
 
       await WifiManager.connectToProtectedSSID(ssid, savedPassword, true, false);
 
@@ -307,7 +300,7 @@ export const Header = () => {
 
       GlobalActivityIndicatorManager.current?.hide();
       showNotifier({
-        title: `自动重连 ${ssid} 成功`,
+        title: `${t('wifi.autoReconnect')} ${ssid} ${t('common.success')}`,
         type: 'success',
         duration: 3000,
         onPress: () => {},
@@ -316,10 +309,10 @@ export const Header = () => {
       // 重新连接socket
       handleConnectToSocketAgain();
     } catch (error) {
-      console.error('自动重连失败:', error);
+      console.error('autoReconnectWifi error', error);
       GlobalActivityIndicatorManager.current?.hide();
       showNotifier({
-        title: `自动重连 ${ssid} 失败，请手动连接`,
+        title: `${t('wifi.autoReconnect')} ${ssid} ${t('common.failed')}`,
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -328,7 +321,9 @@ export const Header = () => {
   };
 
   const gotoSetting = () => {
-    router.push('/(setting)');
+    if (!isSettingPage) {
+      router.push('/(setting)');
+    }
   };
 
   // 获取WiFi权限
@@ -336,10 +331,10 @@ export const Header = () => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
-        title: 'WiFi权限',
-        message: '需要位置权限',
-        buttonNegative: '拒绝',
-        buttonPositive: '允许',
+        title: t('wifi.wifiPermissionTitle'),
+        message: t('wifi.needLocationPermission'),
+        buttonNegative: t('common.reject'),
+        buttonPositive: t('common.allow'),
       }
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -356,7 +351,7 @@ export const Header = () => {
       await getWifiPermission();
       if (!wifiPermission) {
         showNotifier({
-          title: '需要WiFi权限才能搜索网络',
+          title: t('wifi.needWifiPermission'),
           type: 'error',
           duration: 3000,
           onPress: () => {},
@@ -371,7 +366,7 @@ export const Header = () => {
     } catch (error: any) {
       console.error('打开WiFi设置失败:', error?.message || 'Unknown error');
       showNotifier({
-        title: '打开WiFi设置失败，请重试',
+        title: t('wifi.openWifiSettingFailed'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -388,7 +383,7 @@ export const Header = () => {
   };
 
   const handleConnectToSocketAgain = async () => {
-    GlobalActivityIndicatorManager.current?.show('重新连接中...', 0);
+    GlobalActivityIndicatorManager.current?.show(t('wifi.reconnecting'), 0);
 
     await delayed(2000);
 
@@ -412,11 +407,10 @@ export const Header = () => {
   // 智能WiFi扫描策略 - 使用可配置缓存
   const handleRefreshWifiList = async (type: 'auto' | 'manual' = 'auto') => {
     if (type === 'manual') {
-      GlobalActivityIndicatorManager.current?.show('正在刷新WiFi列表...', 1000);
+      GlobalActivityIndicatorManager.current?.show(t('wifi.refreshingWifiList'), 1000);
     }
 
     let loadWifiList: WifiEntry[] = [];
-    let dataSource = '';
 
     try {
       if (type === 'auto') {
@@ -424,20 +418,15 @@ export const Header = () => {
         const cachedData = getCachedWifiData();
         if (cachedData && cachedData.length > 0) {
           loadWifiList = cachedData;
-          dataSource = `${wifiCache?.source}缓存`;
         } else {
           // 缓存无效，获取系统缓存
-          console.log('缓存无效，获取系统数据');
           loadWifiList = await WifiManager.loadWifiList();
-          dataSource = '系统数据';
           updateWifiCache(loadWifiList, 'system');
         }
       } else {
         // 手动模式：尝试强制扫描，失败则使用最佳缓存
         try {
-          console.log('手动刷新：尝试强制扫描');
           loadWifiList = await WifiManager.reScanAndLoadWifiList();
-          dataSource = '强制扫描';
           updateWifiCache(loadWifiList, 'force');
         } catch (error) {
           console.log('强制扫描失败，使用缓存数据:', error);
@@ -446,24 +435,13 @@ export const Header = () => {
           const cachedData = getCachedWifiData();
           if (cachedData && cachedData.length > 0) {
             loadWifiList = cachedData;
-            dataSource = `${wifiCache?.source}缓存(扫描失败)`;
           } else {
             // 没有有效缓存，尝试系统缓存
             loadWifiList = await WifiManager.loadWifiList();
-            dataSource = '系统数据(扫描失败)';
             updateWifiCache(loadWifiList, 'system');
           }
-
-          showNotifier({
-            title: `强制扫描失败，使用${dataSource}`,
-            type: 'error',
-            duration: 3000,
-            onPress: () => {},
-          });
         }
       }
-
-      console.log(`WiFi数据获取完成 (${dataSource}): ${loadWifiList.length}个网络`);
 
       // 处理和过滤WiFi数据
       const uniqueSSIDs = new Map();
@@ -471,7 +449,7 @@ export const Header = () => {
         if (
           wifi.SSID &&
           wifi.SSID !== '(hidden SSID)' &&
-          wifi.SSID.indexOf(GlobalConst.wifiName) !== -1
+          wifi.SSID.indexOf(GlobalConst.wifiName) > -1
         ) {
           const existing = uniqueSSIDs.get(wifi.SSID);
           if (!existing || wifi.level > existing.level) {
@@ -486,12 +464,11 @@ export const Header = () => {
 
       if (filteredWifiList.length > 0) {
         setWifiList(filteredWifiList);
-        console.log(`显示 ${filteredWifiList.length} 个机器人WiFi (${dataSource})`);
       } else {
         setWifiList([]);
         if (type === 'manual') {
           showNotifier({
-            title: `未找到机器人WiFi，数据来源: ${dataSource}`,
+            title: t('wifi.noWifiList'),
             type: 'error',
             duration: 3000,
             onPress: () => {},
@@ -499,12 +476,12 @@ export const Header = () => {
         }
       }
     } catch (error) {
-      console.error('WiFi获取失败:', error);
+      console.error(t('wifi.wifiGetFailed'), error);
       setWifiList([]);
 
       if (type === 'manual') {
         showNotifier({
-          title: 'WiFi获取失败，请检查权限设置',
+          title: t('wifi.wifiGetFailed'),
           type: 'error',
           duration: 3000,
           onPress: () => {},
@@ -547,7 +524,7 @@ export const Header = () => {
   const connectWithNewPassword = async () => {
     if (currentSelectedWifi.current === '' || wifiPassword.length === 0) {
       showNotifier({
-        title: '密码不能为空 或 未选择WiFi',
+        title: t('wifi.passwordEmptyOrWifiNotSelected'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -570,14 +547,14 @@ export const Header = () => {
     try {
       setWifiChooseListVisible(false);
       GlobalActivityIndicatorManager.current?.show(
-        `正在连接${currentSelectedWifi.current}中...`,
+        `${t('wifi.connecting')} ${currentSelectedWifi.current}...`,
         0
       );
 
       await WifiManager.connectToProtectedSSID(currentSelectedWifi.current, password, true, false);
 
       showNotifier({
-        title: '连接成功',
+        title: t('wifi.connectSuccess'),
         type: 'success',
         duration: 3000,
         onPress: () => {},
@@ -590,10 +567,10 @@ export const Header = () => {
         currentConnectWifiSSID: currentSelectedWifi.current,
       });
     } catch (error) {
-      console.log(error);
+      console.error('connectToWifi error', error);
       GlobalActivityIndicatorManager.current?.hide();
       showNotifier({
-        title: '连接失败,请检查密码是否正确或者当前Wi-Fi是否正常',
+        title: t('wifi.connectFailed'),
         type: 'error',
         duration: 3000,
         onPress: () => {},
@@ -634,7 +611,7 @@ export const Header = () => {
             <View className="mb-5 flex flex-row items-center justify-between">
               <View className="flex flex-row items-center justify-center">
                 <Icon source="cog" size={22} />
-                <Text className="mb-1 ml-2 text-2xl font-bold">选择WiFi</Text>
+                <Text className="mb-1 ml-2 text-2xl font-bold">{t('wifi.selectWifi')}</Text>
               </View>
 
               <TouchableOpacity onPress={() => handleRefreshWifiList('manual')}>
@@ -660,16 +637,23 @@ export const Header = () => {
                     )}
                   </View>
                   {robotStatus.currentConnectWifiSSID === item.SSID ? (
-                    <Text className="text-md text-gray-800">已连接</Text>
+                    <Text className="text-md text-gray-800">{t('wifi.connected')}</Text>
                   ) : (
-                    <Text className="text-md text-gray-800">连接</Text>
+                    <Text className="text-md text-gray-800">{t('wifi.connect')}</Text>
                   )}
                 </TouchableOpacity>
               )}
               ListEmptyComponent={() => (
                 <View className="mb-5 flex flex-col items-center justify-center gap-2 p-4">
                   <Icon source="wifi-off" size={24} />
-                  <Text className="text-lg font-bold text-gray-800">未找到机器人WiFi</Text>
+                  <Text className="text-lg font-bold text-gray-800">{t('wifi.noWifiList')}</Text>
+                </View>
+              )}
+              ListFooterComponent={() => (
+                <View className="mt-3 flex flex-row justify-center p-1">
+                  <Text className="text-center text-sm font-bold text-gray-500">
+                    {t('wifi.noWifiListTips')}
+                  </Text>
                 </View>
               )}
             />
@@ -681,9 +665,13 @@ export const Header = () => {
           visible={savedPasswordDialogVisible}
           style={{ width: '80%', left: '0%', right: '0%', marginHorizontal: 'auto' }}
           onDismiss={() => setSavedPasswordDialogVisible(false)}>
-          <Dialog.Title>使用保存的密码连接 {currentSelectedWifi.current}?</Dialog.Title>
+          <Dialog.Title>
+            {t('wifi.useSavedPasswordTips')} {currentSelectedWifi.current}?
+          </Dialog.Title>
           <Dialog.Content>
-            <Text>使用保存的密码连接 {currentSelectedWifi.current}?</Text>
+            <Text>
+              {t('wifi.useSavedPasswordTips')} {currentSelectedWifi.current}?
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
@@ -691,9 +679,9 @@ export const Header = () => {
                 setSavedPasswordDialogVisible(false);
                 setWifiPasswordDialogVisible(true);
               }}>
-              使用新密码连接
+              {t('wifi.useNewPasswordTips')}
             </Button>
-            <Button onPress={connectWithSavedPassword}>使用保存的密码连接</Button>
+            <Button onPress={connectWithSavedPassword}>{t('wifi.useSavedPasswordTips')}</Button>
           </Dialog.Actions>
         </Dialog>
 
@@ -702,17 +690,19 @@ export const Header = () => {
           visible={wifiPasswordDialogVisible}
           style={{ width: '80%', left: '0%', right: '0%', marginHorizontal: 'auto' }}
           onDismiss={() => setWifiPasswordDialogVisible(false)}>
-          <Dialog.Title>输入WiFi密码 {currentSelectedWifi.current}</Dialog.Title>
+          <Dialog.Title>
+            {t('wifi.inputWifiPassword')} {currentSelectedWifi.current}
+          </Dialog.Title>
           <Dialog.Content>
             <TextInput
-              placeholder="输入WiFi密码"
+              placeholder={t('wifi.inputWifiPassword')}
               value={wifiPassword}
               onChangeText={setWifiPassword}
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideWifiPasswordDialog}>取消</Button>
-            <Button onPress={connectWithNewPassword}>连接</Button>
+            <Button onPress={hideWifiPasswordDialog}>{t('common.cancel')}</Button>
+            <Button onPress={connectWithNewPassword}>{t('common.connect')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -729,12 +719,19 @@ export const Header = () => {
           </TouchableOpacity>
         ) : null}
 
-        {!isLoginPage ? (
+        {!isSettingPage ? (
           <TouchableOpacity
             className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
+            style={{
+              ...(isLoginPage && {
+                position: 'absolute',
+                right: 50,
+                top: -52,
+              }),
+            }}
             onPress={gotoSetting}>
             <Gear size={18} weight="bold" />
-            <Text className="text-sm text-gray-800">设置</Text>
+            <Text className="text-sm text-gray-800">{t('common.settings')}</Text>
           </TouchableOpacity>
         ) : null}
 
@@ -744,7 +741,7 @@ export const Header = () => {
             mode="contained"
             buttonColor="red"
             onPress={handleForcePause}>
-            软急停
+            {t('common.softStop')}
           </Button>
         ) : null}
       </View>
