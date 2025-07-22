@@ -25,8 +25,8 @@ const resources = {
 // 初始化 i18next
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'cn', // 默认语言
-  fallbackLng: 'cn', // 备用语言
+  lng: 'en', // 默认语言
+  fallbackLng: 'en', // 备用语言
   interpolation: {
     escapeValue: false, // 不转义 HTML
   },
