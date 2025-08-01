@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
 import { ChangeState } from '@/constants';
@@ -81,9 +81,12 @@ export const ControlManualControl = () => {
         </TouchableRipple>
       </View>
 
-      {/* <TouchableOpacity onPress={tryTest} className="flex rounded-full bg-[#012641] px-5 py-5">
-        <Text className="text-center text-lg text-white">试扎</Text>
-      </TouchableOpacity> */}
+      <TouchableOpacity className="flex rounded-full">
+        <Image
+          source={require('@/assets/direction_tags.png')}
+          style={{ width: 100, height: 100 }}
+        />
+      </TouchableOpacity>
 
       <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">
         <TouchableRipple

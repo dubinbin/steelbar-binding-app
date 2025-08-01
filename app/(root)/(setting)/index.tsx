@@ -13,7 +13,7 @@ import useStore from '@/store';
 
 export default function Setting() {
   const { canLoginInfo } = useStore((state) => state);
-  const [language, setLanguage] = useState<'zh' | 'en' | 'hk'>('en');
+  const [language, setLanguage] = useState<'cn' | 'en' | 'hk'>('en');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const userInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_USER_INFO);
   const languageInfo = useAsyncStorage(storage_config.LOCAL_STORAGE_LANGUAGE);
@@ -22,14 +22,14 @@ export default function Setting() {
   useEffect(() => {
     languageInfo.getItem().then((value) => {
       if (value) {
-        setLanguage(value as 'zh' | 'en' | 'hk');
+        setLanguage(value as 'cn' | 'en' | 'hk');
       } else {
         saveLanguage('en');
       }
     });
   }, []);
 
-  const saveLanguage = (value: 'zh' | 'en' | 'hk') => {
+  const saveLanguage = (value: 'cn' | 'en' | 'hk') => {
     setLanguage(value);
     languageInfo.setItem(value);
     i18n.changeLanguage(value);
@@ -137,10 +137,10 @@ export default function Setting() {
                 <SegmentedButtons
                   value={language}
                   style={{ backgroundColor: '#fff', padding: 10 }}
-                  onValueChange={(value) => saveLanguage(value as 'zh' | 'en' | 'hk')}
+                  onValueChange={(value) => saveLanguage(value as 'cn' | 'en' | 'hk')}
                   buttons={[
                     {
-                      value: 'zh',
+                      value: 'cn',
                       label: '简体中文',
                     },
                     {

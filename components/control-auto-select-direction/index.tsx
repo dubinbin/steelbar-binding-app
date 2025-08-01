@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 // import { Icon } from 'react-native-paper';
 
 // import { GlobalSnackbarManager } from '../snackbar-global';
@@ -174,6 +174,13 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
           )}
         </View>
       </View>
+
+      <TouchableOpacity className="absolute -bottom-2 flex rounded-full">
+        <Image
+          source={require('@/assets/direction_tags.png')}
+          style={{ width: 100, height: 100 }}
+        />
+      </TouchableOpacity>
 
       <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">
         <TouchableRipple

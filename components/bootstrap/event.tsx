@@ -7,6 +7,7 @@ import { ChangeState, DownState, RebootState, TyingState } from '@/constants';
 import { eventBusKey } from '@/constants/event';
 import useStore from '@/store';
 import eventBus from '@/utils/eventBus';
+import { showNotifier } from '@/utils/notifier';
 
 export const EventHandler = () => {
   const { setRobotStatus, setWorkParams, setErrorGroup, errorGroup, setDataInspect } = useStore(
@@ -75,14 +76,20 @@ export const EventHandler = () => {
     );
 
     eventBus.subscribe(eventBusKey.ChangeEvent, ({ eState }: { eState: ChangeState }) => {
+      showNotifier({
+        title: `eState: ${eState}`,
+        type: 'info',
+        duration: 3000,
+        onPress: () => {},
+      });
       if (eState === ChangeState.move) {
         setRobotStatus({
-          changeState: eState,
+          changeState: ChangeState.move,
         });
         GlobalActivityIndicatorManager.current?.show(t('robot.changingOrbit'), 0);
       } else {
         setRobotStatus({
-          changeState: eState,
+          changeState: ChangeState.finish,
         });
         GlobalActivityIndicatorManager.current?.hide();
       }
