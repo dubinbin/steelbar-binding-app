@@ -32,7 +32,7 @@ export const ControlSegmented = () => {
           });
           if (value !== ROBOT_CURRENT_MODE.AUTO) {
             setRobotStatus({
-              currentBindingMode: '',
+              currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
             });
           }
         }}

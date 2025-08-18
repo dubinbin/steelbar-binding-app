@@ -27,5 +27,13 @@ export enum Command {
   gunUpTest = 26, //枪 上
   lunForward = 27, //轮子前进
   lunBackward = 28, //轮子后退
+  GunTrigger = 30, // 枪触发
+  GunReboot = 31, // 枪绑扎重启
   lunStop = 29, //轮子停止
+  goForwardInAutoMode = 32, // 前进2 自动模式
+  goBackInAutoMode = 33, // 后退2 自动模式
+  LeftChange = 34, // 左变轨  自动模式
+  RightChange = 35, // 右变轨 自动模式
+  BeginAutoMode = 36, // 自动模式开始
+  EndAutoMode = 37, // 自动模式结束
 }

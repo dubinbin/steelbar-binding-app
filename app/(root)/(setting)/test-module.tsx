@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { View, FlatList } from 'react-native';
 import { Button, Card, Text } from 'react-native-paper';
 
@@ -10,8 +11,14 @@ import { sendCmdDispatch } from '@/utils/helper';
 export default function TestModule() {
   const router = useRouter();
   const { debugLog, clearDebugLog, logStatus, setLogStatus } = useStore((state) => state);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   const goback = () => {
     router.back();
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
 
   const openDebugMode = () => {
@@ -62,8 +69,8 @@ export default function TestModule() {
     <View className="flex w-full">
       <Header />
 
-      <View className="flex w-full flex-row px-10">
-        <Card className="mb-5 w-1/2">
+      <View className="flex min-h-[72%] w-full flex-row px-5">
+        <Card className="mb-5 mr-5 w-[43%]" style={{ display: isFullscreen ? 'none' : 'flex' }}>
           <Button
             mode="contained"
             icon="debug-step-out"
@@ -150,11 +157,25 @@ export default function TestModule() {
                 onPress={() => openDebugCommand(Command.lunStop)}>
                 轮子停止 (LunStop)
               </Button>
+
+              <Button
+                mode="text"
+                className="mx-1 mb-4 text-sm"
+                onPress={() => openDebugCommand(Command.GunTrigger)}>
+                枪绑扎 (GunTrigger)
+              </Button>
+
+              <Button
+                mode="text"
+                className="mx-1 mb-4 text-sm"
+                onPress={() => openDebugCommand(Command.GunReboot)}>
+                枪重启 (GunReboot)
+              </Button>
             </View>
           </Card.Content>
         </Card>
 
-        <View className="flex-1">
+        <View className="flex-1" style={{ width: isFullscreen ? '90%' : 'auto' }}>
           <FlatList
             data={debugLog}
             className="m-2 mb-3 flex-1 rounded-lg bg-black p-2"
@@ -197,9 +218,15 @@ export default function TestModule() {
         </View>
       </View>
 
-      <Button mode="outlined" className="mx-5 my-2" onPress={goback}>
-        返回
-      </Button>
+      <View className="flex w-full flex-row justify-center gap-4">
+        <Button mode="outlined" className="mx-5 my-2" onPress={toggleFullscreen}>
+          {isFullscreen ? '退出全屏' : '进入全屏'}
+        </Button>
+
+        <Button mode="outlined" className="mx-5 my-2" onPress={goback}>
+          返回
+        </Button>
+      </View>
     </View>
   );
 }

@@ -38,4 +38,8 @@ export class ConnectDeviceInfo {
   static getWifiIp(): string {
     return this._wifiIp;
   }
+
+  static getErrorInfo(errorId: number): string {
+    return this.errorInfo[errorId];
+  }
 }

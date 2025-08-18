@@ -581,15 +581,56 @@ export const Header = () => {
   return (
     <View
       className="flex w-full flex-col items-end justify-between px-6 pt-5"
-      style={{ paddingTop: top + 15 }}>
-      <View className="flex w-full flex-row items-center justify-between">
+      style={{ paddingTop: top + 20 }}>
+      <View className="mb-5 flex w-full flex-row items-center justify-between">
         <Image
           source={require('@/assets/hkcrc.png')}
           style={{ width: 250, height: 26.39 }}
           contentFit="contain"
           transition={1000}
         />
-        {renderBatteryIcon()}
+
+        <View className="flex flex-row items-center gap-5">
+          <View className="flex flex-row items-center gap-5">
+            {!isLoginPage ? (
+              <TouchableOpacity
+                className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
+                onPress={openWifiSetting}>
+                <WifiHigh size={18} weight="bold" />
+                <Text className="text-sm text-gray-800">
+                  {robotStatus.currentConnectWifiSSID ? robotStatus.currentConnectWifiSSID : 'WiFi'}
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+
+            {!isSettingPage ? (
+              <TouchableOpacity
+                className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
+                style={{
+                  ...(isLoginPage && {
+                    position: 'absolute',
+                    right: 50,
+                    top: -52,
+                  }),
+                }}
+                onPress={gotoSetting}>
+                <Gear size={18} weight="bold" />
+                <Text className="text-sm text-gray-800">{t('common.settings')}</Text>
+              </TouchableOpacity>
+            ) : null}
+
+            {!isLoginPage ? (
+              <Button
+                icon={robotStatus.robotDangerStatus ? 'pause' : 'play'}
+                mode="contained"
+                buttonColor="red"
+                onPress={handleForcePause}>
+                {t('common.softStop')}
+              </Button>
+            ) : null}
+          </View>
+          {renderBatteryIcon()}
+        </View>
       </View>
 
       <Portal>
@@ -706,45 +747,6 @@ export const Header = () => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-
-      <View className="mb-1 mt-5 flex flex-row items-center gap-5">
-        {!isLoginPage ? (
-          <TouchableOpacity
-            className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
-            onPress={openWifiSetting}>
-            <WifiHigh size={18} weight="bold" />
-            <Text className="text-sm text-gray-800">
-              {robotStatus.currentConnectWifiSSID ? robotStatus.currentConnectWifiSSID : 'WiFi'}
-            </Text>
-          </TouchableOpacity>
-        ) : null}
-
-        {!isSettingPage ? (
-          <TouchableOpacity
-            className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
-            style={{
-              ...(isLoginPage && {
-                position: 'absolute',
-                right: 50,
-                top: -52,
-              }),
-            }}
-            onPress={gotoSetting}>
-            <Gear size={18} weight="bold" />
-            <Text className="text-sm text-gray-800">{t('common.settings')}</Text>
-          </TouchableOpacity>
-        ) : null}
-
-        {!isLoginPage ? (
-          <Button
-            icon={robotStatus.robotDangerStatus ? 'pause' : 'play'}
-            mode="contained"
-            buttonColor="red"
-            onPress={handleForcePause}>
-            {t('common.softStop')}
-          </Button>
-        ) : null}
-      </View>
     </View>
   );
 };

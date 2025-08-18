@@ -33,6 +33,10 @@ npm install
 
 # 或使用 yarn
 yarn install
+
+# 个人建议开发环境
+node: v22.17.1 (npm v10.9.2)
+
 ```
 
 ### 2. 启动开发服务器
@@ -70,7 +74,7 @@ eas build --profile development --platform android
 2. **配置环境变量**
    ```bash
    # 添加到 ~/.bashrc 或 ~/.zshrc
-   export ANDROID_HOME=$HOME/Library/Android/sdk
+   export ANDROID_HOME=$HOME/Library/Android/sdk  // 这个具体得看自己电脑配置java sdk的位置
    export PATH=$PATH:$ANDROID_HOME/emulator
    export PATH=$PATH:$ANDROID_HOME/tools
    export PATH=$PATH:$ANDROID_HOME/tools/bin
@@ -171,6 +175,9 @@ npm run format
 # 构建生产版本
 eas build --platform android
 eas build --platform ios
+
+# 构建本地版本
+eas build --platform android --local 
 ```
 
 ## 项目结构

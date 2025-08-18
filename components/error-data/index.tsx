@@ -10,7 +10,7 @@ import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 export const ErrorData = () => {
   const { height } = Dimensions.get('window');
   const targetHeight = height * 0.45;
-  const rowCount = height > 600 ? Math.floor(targetHeight / 100) : 1;
+  const rowCount = height > 550 ? Math.floor(targetHeight / 100) : 1;
   const { t } = useTranslation();
   const { errorGroup } = useStore((state) => state);
 
@@ -19,7 +19,7 @@ export const ErrorData = () => {
   );
 
   useEffect(() => {
-    const temp = errorGroup?.map((item, index) => {
+    const temp = errorGroup.map((item, index) => {
       return {
         key: index,
         index: item.errorId.toString(),
@@ -35,13 +35,11 @@ export const ErrorData = () => {
   };
 
   return (
-    <Card>
+    <Card className="min-h-[53%]">
       <View className="w-full px-5 pb-1 pt-2">
         <View className="mb-2 mt-3  flex flex-row items-center justify-center">
           <Icon source="alert-circle-outline" size={22} />
-          <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">
-            {t('malfunction.title')}
-          </Text>
+          <Text className="ml-2 text-center text-2xl font-bold">{t('malfunction.title')}</Text>
         </View>
         <DataTable>
           <DataTable.Header>

@@ -11,7 +11,7 @@ import useStore from '@/store';
 const Home = () => {
   const { robotStatus } = useStore((state) => state);
   const { height } = Dimensions.get('window');
-  const headerHeight = 120;
+  const headerHeight = 70;
 
   return (
     <View className="flex w-full">
@@ -22,19 +22,15 @@ const Home = () => {
         style={{ height: height - headerHeight }}
         className="flex w-full flex-row justify-center px-6 py-5">
         <View className="w-[37%]">
-          <View className="relative mx-auto flex w-[95%] flex-col justify-between gap-y-4">
-            <View>
-              <ErrorData />
-            </View>
-            <View>
-              <DataInspect />
-            </View>
+          <View className="relative mx-auto flex w-[95%] flex-col justify-center gap-y-4">
+            <ErrorData />
+            <DataInspect />
           </View>
         </View>
         <View className="flex w-[26%]">
           <StatusBox />
         </View>
-        <View className="flex h-[95%] w-[37%] flex-row">
+        <View className="flex w-[37%] flex-row">
           <View className="relative mx-auto flex w-[95%] flex-col justify-between gap-y-5">
             <ControlBar />
           </View>

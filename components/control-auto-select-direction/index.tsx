@@ -1,115 +1,43 @@
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
-// import { Icon } from 'react-native-paper';
 
-// import { GlobalSnackbarManager } from '../snackbar-global';
-
-import { TouchableRipple } from 'react-native-paper';
+import { Button, TouchableRipple } from 'react-native-paper';
 
 import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
 import { debounce, sendCmdDispatch } from '@/utils/helper';
+
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;
+  onStop: () => void;
 }
 
-export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirectionProps) => {
+export const ControlAutoSelectDirection = ({
+  onStart,
+  onStop,
+}: ControlAutoSelectDirectionProps) => {
   const { robotStatus } = useStore((state) => state);
   const { t } = useTranslation();
-  const handlePlay = () => {
-    // let count = 0;
-    // let mutualExclusion = false;
-    // robotStatus.direction.forEach((val, direction) => {
-    //   if (val) {
-    //     count++;
-    //   }
-    //   if (
-    //     direction === DIRECTION.UP &&
-    //     val === true &&
-    //     robotStatus.direction.get(DIRECTION.DOWN) === true
-    //   ) {
-    //     mutualExclusion = true;
-    //   }
-
-    //   if (
-    //     direction === DIRECTION.LEFT &&
-    //     val === true &&
-    //     robotStatus.direction.get(DIRECTION.RIGHT) === true
-    //   ) {
-    //     mutualExclusion = true;
-    //   }
-
-    //   if (
-    //     direction === DIRECTION.RIGHT &&
-    //     val === true &&
-    //     robotStatus.direction.get(DIRECTION.LEFT) === true
-    //   ) {
-    //     mutualExclusion = true;
-    //   }
-
-    //   if (
-    //     direction === DIRECTION.DOWN &&
-    //     val === true &&
-    //     robotStatus.direction.get(DIRECTION.UP) === true
-    //   ) {
-    //     mutualExclusion = true;
-    //   }
-    // });
-
-    // if (count === 0) {
-    //   GlobalSnackbarManager.current?.show({
-    //     content: '必须选择一个方向',
-    //   });
-    //   return;
-    // }
-
-    // if (count > 2) {
-    //   GlobalSnackbarManager.current?.show({
-    //     content: '你只能选择2个方向',
-    //   });
-    //   return;
-    // }
-
-    // if (mutualExclusion) {
-    //   GlobalSnackbarManager.current?.show({
-    //     content: '你只能选择2个不互斥的方向',
-    //   });
-    //   return;
-    // }
-
-    // 开始
-
-    onStart();
-  };
-
-  const directionClick = (direction: DIRECTION) => {
-    // setRobotStatus({
-    //   direction: new Map(robotStatus.direction).set(
-    //     direction,
-    //     !robotStatus.direction.get(direction)
-    //   ),
-    // });
-  };
 
   const switchLeftOrRight = debounce((direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
       // 左右移动要等变轨完成
       if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.goLeft);
+        sendCmdDispatch(Command.LeftChange);
       }
     } else if (direction === DIRECTION.RIGHT) {
       if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.goRight);
+        sendCmdDispatch(Command.RightChange);
       }
     }
   }, 400);
 
   const switchTop = (isPressed: boolean) => {
     if (isPressed) {
-      sendCmdDispatch(Command.goForward);
+      sendCmdDispatch(Command.goForwardInAutoMode);
     } else {
       sendCmdDispatch(Command.release);
     }
@@ -117,14 +45,38 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
 
   const switchDown = (isPressed: boolean) => {
     if (isPressed) {
-      sendCmdDispatch(Command.goBack);
+      sendCmdDispatch(Command.goBackInAutoMode);
     } else {
       sendCmdDispatch(Command.release);
     }
   };
 
   return (
-    <View className="relative mt-12 flex flex-row items-center justify-center gap-x-5">
+    <View className="relative mt-16 flex flex-row items-center justify-center gap-x-5">
+      <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">
+        <Button
+          mode="contained-tonal"
+          buttonColor="#012641"
+          textColor="#ffffff"
+          style={{ top: -80, left: -50 }}
+          onPress={() => {
+            onStart();
+          }}>
+          开始
+        </Button>
+
+        <Button
+          mode="contained-tonal"
+          buttonColor="#FD1D1DD5"
+          textColor="#ffffff"
+          style={{ top: -80, right: -50 }}
+          onPress={() => {
+            onStop();
+          }}>
+          停止
+        </Button>
+      </View>
+
       <View className="absolute left-0 top-0 h-full w-full flex-col items-center justify-center gap-y-10">
         <TouchableRipple
           onPress={() => switchTop(true)}
@@ -176,10 +128,7 @@ export const ControlAutoSelectDirection = ({ onStart }: ControlAutoSelectDirecti
       </View>
 
       <TouchableOpacity className="absolute -bottom-2 flex rounded-full">
-        <Image
-          source={require('@/assets/direction_tags.png')}
-          style={{ width: 100, height: 100 }}
-        />
+        <Image source={require('@/assets/direction_tags.png')} style={{ width: 90, height: 90 }} />
       </TouchableOpacity>
 
       <View className="absolute left-0 top-0 h-full w-full flex-row items-center justify-center gap-x-10">

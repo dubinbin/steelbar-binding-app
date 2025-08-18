@@ -22,6 +22,7 @@ import {
   FrontBoardEvent,
   MksEvent,
 } from './events';
+import { parserBackBoardData, parserFrontBoardData, parserMksData } from './helper';
 import { showNotifier } from './notifier';
 
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
@@ -231,6 +232,10 @@ export class SocketManage {
               new BackBoardEvent(temp11).eventName,
               new BackBoardEvent(eventData).data
             );
+            setDebugLog({
+              time: new Date().toISOString(),
+              msg: `收到后板数据: ${parserBackBoardData(eventData)}`,
+            });
             break;
           case GlobalConst.frontBoard:
             const temp12 = String(listStr?.[2]);
@@ -238,10 +243,18 @@ export class SocketManage {
               new FrontBoardEvent(temp12).eventName,
               new FrontBoardEvent(eventData).data
             );
+            setDebugLog({
+              time: new Date().toISOString(),
+              msg: `收到前板数据: ${parserFrontBoardData(eventData)}`,
+            });
             break;
           case GlobalConst.mks:
             const temp13 = String(listStr?.[2]);
             eventBus.publish(new MksEvent(temp13).eventName, new MksEvent(eventData).data);
+            setDebugLog({
+              time: new Date().toISOString(),
+              msg: `收到MKS数据: ${parserMksData(eventData)}`,
+            });
             break;
           default:
         }

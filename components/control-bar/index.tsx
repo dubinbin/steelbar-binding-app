@@ -10,9 +10,20 @@ import { ControlSegmented } from '../control-segmented';
 
 import { Command } from '@/constants/command';
 import useStore from '@/store';
-import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
+import { ROBOT_CURRENT_MODE } from '@/types';
 import { sendCmdDispatch } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
+
+export const LockMode = () => {
+  const { t } = useTranslation();
+  return (
+    <View className="flex h-[180px] w-[150px] flex-row items-center justify-center gap-x-2">
+      <Icon source="lock" size={22} />
+      <Text className="text-center text-xl font-normal text-black">{t('common.lockMode')}</Text>
+    </View>
+  );
+};
+
 export const ControlBar = () => {
   const { robotStatus, workParams, setRobotStatus } = useStore((state) => state);
   const [showMore, setShowMore] = useState(false);
@@ -32,25 +43,7 @@ export const ControlBar = () => {
     }
 
     if (!robotStatus.isWorking) {
-      switch (robotStatus.currentBindingMode) {
-        case ROBOT_WORK_MODE.WITHOUT_BINDING:
-          sendCmdDispatch(Command.noLashed);
-          break;
-        case ROBOT_WORK_MODE.FULL_BINDING:
-          sendCmdDispatch(Command.allLashed);
-          break;
-        case ROBOT_WORK_MODE.SKIP_BINDING:
-          sendCmdDispatch(Command.jumpLashed);
-          break;
-        default:
-          showNotifier({
-            title: t('errors.currentBindingModeNotSupported'),
-            type: 'error',
-            duration: 3000,
-            onPress: () => {},
-          });
-          break;
-      }
+      sendCmdDispatch(Command.BeginAutoMode);
     } else {
       sendCmdDispatch(Command.manualModel);
       setRobotStatus({
@@ -59,18 +52,17 @@ export const ControlBar = () => {
     }
   };
 
+  const stopTyping = () => {
+    sendCmdDispatch(Command.EndAutoMode);
+  };
+
   const renderControl = () => {
     if (robotStatus.currentMode === ROBOT_CURRENT_MODE.LOCKED) {
-      return (
-        <View className="flex h-[180px] w-[150px] flex-row items-center justify-center gap-x-2">
-          <Icon source="lock" size={22} />
-          <Text className="text-center text-xl font-normal text-black">{t('common.lockMode')}</Text>
-        </View>
-      );
+      return <LockMode />;
     } else if (robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL) {
       return <ControlManualControl />;
     } else {
-      return <ControlAutoSelectDirection onStart={startTyping} />;
+      return <ControlAutoSelectDirection onStart={startTyping} onStop={stopTyping} />;
     }
   };
 
@@ -80,7 +72,7 @@ export const ControlBar = () => {
         <View className="mb-5 flex flex-col items-center">
           <View className="mb-2 mt-3 flex flex-row items-center justify-center">
             <Icon source="robot-happy-outline" size={22} />
-            <Text className="-top-[1px] ml-2 text-center text-2xl font-bold">
+            <Text className="ml-2 text-center text-2xl font-bold">
               {t('common.robotOperation')}
             </Text>
           </View>
