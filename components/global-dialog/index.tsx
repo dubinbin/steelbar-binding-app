@@ -46,7 +46,7 @@ const GlobalDialog = forwardRef((_: any, ref: any) => {
   return (
     <Portal>
       <Dialog
-        style={{ width: '50%', left: '50%', transform: [{ translateX: '-50%' }] }}
+        style={{ width: '80%', left: '0%', right: '0%', marginHorizontal: 'auto' }}
         visible={visible}
         onDismiss={hideDialog}>
         <Dialog.Title>{config.title}</Dialog.Title>

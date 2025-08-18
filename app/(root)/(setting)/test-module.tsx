@@ -1,79 +1,35 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { View, FlatList } from 'react-native';
-import { Button, Card, Text } from 'react-native-paper';
+import { View, FlatList, Text } from 'react-native';
+import { Button, Card, Dialog, Icon, Portal } from 'react-native-paper';
 
+import { DataMonitor } from '@/components/data-monitor';
 import { Header } from '@/components/header';
+import { LogItem } from '@/components/logs';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
-import { parserBackBoardData, sendCmdDispatch } from '@/utils/helper';
-
-// 自定义日志渲染组件
-const LogItem = ({ item }: { item: { time: string; msg: string } }) => {
-  const { msg, time } = item;
-
-  // 检查是否是特定格式的数据（包含 "-----start-----" 和 "end"）
-  const isFormattedData = msg.includes('-----start-----') && msg.includes('-----end-----');
-
-  if (isFormattedData) {
-    // 解析格式化数据
-    const lines = msg.split('\n').filter((line) => line.trim());
-    const title = lines[0]?.split(':')[0] || '数据';
-    const dataLines = lines.slice(1, -1); // 去掉第一行和最后一行
-
-    return (
-      <View className="mb-3">
-        <Text style={{ color: 'white', fontSize: 16, marginBottom: 3 }}>
-          {new Date(time).toLocaleString()}: {title}
-        </Text>
-        <View className="rounded-lg border border-gray-500 bg-gray-900 p-3">
-          {dataLines.map((line, index) => {
-            const trimmedLine = line.trim();
-            if (trimmedLine.includes(':')) {
-              const [key, value] = trimmedLine.split(':').map((s) => s.trim());
-              return (
-                <View key={index} className="mb-1 flex-row items-center">
-                  <Text style={{ color: '#87CEEB', fontSize: 14, flex: 1 }}>{key}:</Text>
-                  <Text
-                    style={{ color: '#98FB98', fontSize: 14, width: 60 }}
-                    className="rounded-md border-[0.5px] border-gray-500 px-2 py-1 text-center text-xs">
-                    {value.replace(',', '')}
-                  </Text>
-                </View>
-              );
-            }
-            return (
-              <Text key={index} style={{ color: 'white', fontSize: 14, marginBottom: 1 }}>
-                {trimmedLine}
-              </Text>
-            );
-          })}
-        </View>
-      </View>
-    );
-  }
-
-  // 普通日志显示
-  return (
-    <Text style={{ color: 'white', fontSize: 16, marginBottom: 3 }}>
-      {new Date(time).toLocaleString()}: {msg}
-    </Text>
-  );
-};
+import { sendCmdDispatch } from '@/utils/helper';
 
 export default function TestModule() {
   const router = useRouter();
-  const { debugLog, clearDebugLog, logStatus, setLogStatus, setDebugLog } = useStore(
-    (state) => state
-  );
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const {
+    debugLog,
+    clearDebugLog,
+    logStatus,
+    setLogStatus,
+
+    backBoardData,
+    mksData,
+    frontBoardData,
+  } = useStore((state) => state);
+  const [isShowlog, setIsShowLog] = useState(false);
 
   const goback = () => {
     router.back();
   };
 
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
+    setIsShowLog(!isShowlog);
   };
 
   const openDebugMode = () => {
@@ -84,10 +40,6 @@ export default function TestModule() {
     switch (command) {
       case Command.sliderLeftTest:
         sendCmdDispatch(Command.sliderLeftTest);
-        // setDebugLog({
-        //   time: new Date().toISOString(),
-        //   msg: `收到后板数据: ${parserBackBoardData(`rebarLaser:0,motorTault:0,ultrasonValue:0,motorState:0,right:0,left:0,edge:0`)}`,
-        // });
         break;
       case Command.sliderRightTest:
         sendCmdDispatch(Command.sliderRightTest);
@@ -128,8 +80,8 @@ export default function TestModule() {
     <View className="flex w-full">
       <Header />
 
-      <View className="flex min-h-[72%] w-full flex-row px-5">
-        <Card className="mb-5 mr-5 w-[43%]" style={{ display: isFullscreen ? 'none' : 'flex' }}>
+      <View className="flex min-h-[72%] w-full flex-row px-3">
+        <Card className=" mb-5 mr-3 w-[40%]" style={{ display: isShowlog ? 'none' : 'flex' }}>
           <Button
             mode="contained"
             icon="debug-step-out"
@@ -234,55 +186,104 @@ export default function TestModule() {
           </Card.Content>
         </Card>
 
-        <View className="flex-1" style={{ width: isFullscreen ? '90%' : 'auto' }}>
-          <FlatList
-            data={debugLog}
-            className="m-2 mb-3 flex-1 rounded-lg bg-black p-2"
-            renderItem={({ item }) => <LogItem item={item} />}
-            ItemSeparatorComponent={() => <View className="h-2" />}
-            keyExtractor={(item, index) => `${item.time}-${index}`}
-          />
-          <View className="flex w-full flex-row justify-center gap-4">
-            {logStatus === 'start' ? (
-              <Button
-                mode="outlined"
-                icon="pause"
-                className="px-3"
-                onPress={() => setLogStatus('stop')}>
-                暂停
-              </Button>
-            ) : (
-              <Button
-                mode="outlined"
-                icon="play"
-                className="px-3"
-                onPress={() => setLogStatus('start')}>
-                继续
-              </Button>
-            )}
-            <Button
-              mode="outlined"
-              icon="close"
-              className="px-3"
-              onPress={() => {
-                clearDebugLog();
-              }}>
-              清空
-            </Button>
-            <Button
-              mode="outlined"
-              icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
-              className="px-3"
-              onPress={toggleFullscreen}>
-              {isFullscreen ? '退出全屏' : '全屏'}
-            </Button>
+        <Card className="mb-5 mr-3 flex-1">
+          <View className="flex flex-row px-3 py-3">
+            <Icon source="database" size={20} />
+            <Text className="mb-2 ml-2 text-lg font-bold">后板数据</Text>
           </View>
-        </View>
+          {backBoardData ? (
+            <DataMonitor msg={backBoardData} />
+          ) : (
+            <Text className="text-center">暂无数据</Text>
+          )}
+        </Card>
+
+        <Card className="mb-5 mr-3 flex-1 ">
+          <View className="flex flex-row px-3 py-3">
+            <Icon source="database" size={20} />
+            <Text className="mb-2 ml-2 text-lg font-bold">MKS数据</Text>
+          </View>
+          {mksData ? <DataMonitor msg={mksData} /> : <Text className="text-center">暂无数据</Text>}
+        </Card>
+
+        <Card className="mb-5 mr-3 flex-1">
+          <View className="flex flex-row px-3 py-3">
+            <Icon source="database" size={20} />
+            <Text className="mb-2 ml-2 text-lg font-bold">前板数据</Text>
+          </View>
+          {frontBoardData ? (
+            <DataMonitor msg={frontBoardData} />
+          ) : (
+            <Text className="text-center">暂无数据</Text>
+          )}
+        </Card>
+
+        <Portal>
+          <Dialog
+            style={{
+              width: '80%',
+              left: '0%',
+              right: '0%',
+              marginHorizontal: 'auto',
+              minHeight: 450,
+            }}
+            visible={isShowlog}
+            onDismiss={() => setIsShowLog(false)}>
+            <Dialog.Title>日志</Dialog.Title>
+            <Dialog.Content>
+              <View>
+                <FlatList
+                  data={debugLog}
+                  className="m-2 mb-3 flex-1 rounded-lg bg-black p-2"
+                  style={{ minHeight: 300 }}
+                  renderItem={({ item }) => <LogItem item={item} />}
+                  ItemSeparatorComponent={() => <View className="h-2" />}
+                  keyExtractor={(item, index) => `${item.time}-${index}`}
+                />
+                <View className="flex w-full flex-row justify-center gap-4">
+                  {logStatus === 'start' ? (
+                    <Button
+                      mode="outlined"
+                      icon="pause"
+                      className="px-3"
+                      onPress={() => setLogStatus('stop')}>
+                      暂停
+                    </Button>
+                  ) : (
+                    <Button
+                      mode="outlined"
+                      icon="play"
+                      className="px-3"
+                      onPress={() => setLogStatus('start')}>
+                      继续
+                    </Button>
+                  )}
+                  <Button
+                    mode="outlined"
+                    icon="close"
+                    className="px-3"
+                    onPress={() => {
+                      clearDebugLog();
+                    }}>
+                    清空
+                  </Button>
+                  <Button
+                    mode="outlined"
+                    icon={isShowlog ? 'fullscreen-exit' : 'fullscreen'}
+                    className="px-3"
+                    onPress={toggleFullscreen}>
+                    {isShowlog ? '退出日志' : '全屏'}
+                  </Button>
+                </View>
+              </View>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
       </View>
 
       <View className="flex w-full flex-row justify-center gap-4">
         <Button mode="outlined" className="mx-5 my-2" onPress={toggleFullscreen}>
-          {isFullscreen ? '退出全屏' : '进入全屏'}
+          {isShowlog ? '退出日志' : '进入日志'}
         </Button>
 
         <Button mode="outlined" className="mx-5 my-2" onPress={goback}>

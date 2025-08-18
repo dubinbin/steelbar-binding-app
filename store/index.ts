@@ -66,6 +66,12 @@ interface State {
   clearDebugLog: () => void;
   logStatus: 'stop' | 'start';
   setLogStatus: (newInfo: 'stop' | 'start') => void;
+  mksData: string;
+  setMksData: (str: string) => void;
+  backBoardData: string;
+  setBackBoardData: (str: string) => void;
+  frontBoardData: string;
+  setFrontBoardData: (str: string) => void;
 }
 
 export const initWorkParams = {
@@ -172,6 +178,24 @@ export const useStore = create<State>((set) => ({
   logStatus: 'start',
   setLogStatus: (newInfo: 'stop' | 'start') => set((state) => ({ logStatus: newInfo })),
   clearDebugLog: () => set((state) => ({ debugLog: [] })),
+  mksData: '',
+  setMksData: (str: string) => {
+    set((state) => ({
+      mksData: str,
+    }));
+  },
+  backBoardData: '',
+  setBackBoardData: (str: string) => {
+    set((state) => ({
+      backBoardData: str,
+    }));
+  },
+  frontBoardData: '',
+  setFrontBoardData: (str: string) => {
+    set((state) => ({
+      frontBoardData: str,
+    }));
+  },
 }));
 
 export default useStore;

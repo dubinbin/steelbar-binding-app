@@ -222,8 +222,8 @@ export const parserFrontBoardData = (data: string) => {
       value: motorTault.split(':')?.[1],
     },
     ultrasonValue: {
-      type: ultrasonValue.split(':')[1],
-      value: ultrasonValue.split(':')[0],
+      type: ultrasonValue.split(':')?.[0],
+      value: ultrasonValue.split(':')?.[1],
     },
     motorState: {
       type: motorState.split(':')?.[0],
