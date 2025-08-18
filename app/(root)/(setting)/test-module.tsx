@@ -6,11 +6,66 @@ import { Button, Card, Text } from 'react-native-paper';
 import { Header } from '@/components/header';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
-import { sendCmdDispatch } from '@/utils/helper';
+import { parserBackBoardData, sendCmdDispatch } from '@/utils/helper';
+
+// 自定义日志渲染组件
+const LogItem = ({ item }: { item: { time: string; msg: string } }) => {
+  const { msg, time } = item;
+
+  // 检查是否是特定格式的数据（包含 "-----start-----" 和 "end"）
+  const isFormattedData = msg.includes('-----start-----') && msg.includes('-----end-----');
+
+  if (isFormattedData) {
+    // 解析格式化数据
+    const lines = msg.split('\n').filter((line) => line.trim());
+    const title = lines[0]?.split(':')[0] || '数据';
+    const dataLines = lines.slice(1, -1); // 去掉第一行和最后一行
+
+    return (
+      <View className="mb-3">
+        <Text style={{ color: 'white', fontSize: 16, marginBottom: 3 }}>
+          {new Date(time).toLocaleString()}: {title}
+        </Text>
+        <View className="rounded-lg border border-gray-500 bg-gray-900 p-3">
+          {dataLines.map((line, index) => {
+            const trimmedLine = line.trim();
+            if (trimmedLine.includes(':')) {
+              const [key, value] = trimmedLine.split(':').map((s) => s.trim());
+              return (
+                <View key={index} className="mb-1 flex-row items-center">
+                  <Text style={{ color: '#87CEEB', fontSize: 14, flex: 1 }}>{key}:</Text>
+                  <Text
+                    style={{ color: '#98FB98', fontSize: 14, width: 60 }}
+                    className="rounded-md border-[0.5px] border-gray-500 px-2 py-1 text-center text-xs">
+                    {value.replace(',', '')}
+                  </Text>
+                </View>
+              );
+            }
+            return (
+              <Text key={index} style={{ color: 'white', fontSize: 14, marginBottom: 1 }}>
+                {trimmedLine}
+              </Text>
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
+  // 普通日志显示
+  return (
+    <Text style={{ color: 'white', fontSize: 16, marginBottom: 3 }}>
+      {new Date(time).toLocaleString()}: {msg}
+    </Text>
+  );
+};
 
 export default function TestModule() {
   const router = useRouter();
-  const { debugLog, clearDebugLog, logStatus, setLogStatus } = useStore((state) => state);
+  const { debugLog, clearDebugLog, logStatus, setLogStatus, setDebugLog } = useStore(
+    (state) => state
+  );
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const goback = () => {
@@ -29,6 +84,10 @@ export default function TestModule() {
     switch (command) {
       case Command.sliderLeftTest:
         sendCmdDispatch(Command.sliderLeftTest);
+        // setDebugLog({
+        //   time: new Date().toISOString(),
+        //   msg: `收到后板数据: ${parserBackBoardData(`rebarLaser:0,motorTault:0,ultrasonValue:0,motorState:0,right:0,left:0,edge:0`)}`,
+        // });
         break;
       case Command.sliderRightTest:
         sendCmdDispatch(Command.sliderRightTest);
@@ -179,11 +238,7 @@ export default function TestModule() {
           <FlatList
             data={debugLog}
             className="m-2 mb-3 flex-1 rounded-lg bg-black p-2"
-            renderItem={({ item }) => (
-              <Text style={{ color: 'white', fontSize: 16, marginBottom: 3 }}>
-                {new Date(item.time).toLocaleString()}: {item.msg}
-              </Text>
-            )}
+            renderItem={({ item }) => <LogItem item={item} />}
             ItemSeparatorComponent={() => <View className="h-2" />}
             keyExtractor={(item, index) => `${item.time}-${index}`}
           />
@@ -213,6 +268,13 @@ export default function TestModule() {
                 clearDebugLog();
               }}>
               清空
+            </Button>
+            <Button
+              mode="outlined"
+              icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
+              className="px-3"
+              onPress={toggleFullscreen}>
+              {isFullscreen ? '退出全屏' : '全屏'}
             </Button>
           </View>
         </View>
