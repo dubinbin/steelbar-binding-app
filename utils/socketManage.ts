@@ -228,37 +228,31 @@ export class SocketManage {
             eventBus.publish(new DownEvent(temp10).eventName, new DownEvent(temp10).data);
             break;
           case GlobalConst.backBoard:
-            const temp11 = String(listStr?.[2]);
-            eventBus.publish(
-              new BackBoardEvent(temp11).eventName,
-              new BackBoardEvent(eventData).data
-            );
+            const pstr = listStr?.slice(2).join(':');
+            const parserData = parserBackBoardData(pstr);
             setDebugLog({
               time: new Date().toISOString(),
-              msg: `收到后板数据: ${parserBackBoardData(eventData)}`,
+              msg: `收到后板数据: ${parserData}`,
             });
-            setBackBoardData(parserBackBoardData(eventData));
+            setBackBoardData(parserData);
             break;
           case GlobalConst.frontBoard:
-            const temp12 = String(listStr?.[2]);
-            eventBus.publish(
-              new FrontBoardEvent(temp12).eventName,
-              new FrontBoardEvent(eventData).data
-            );
+            const pstr1 = listStr?.slice(2).join(':');
+            const parserData1 = parserFrontBoardData(pstr1);
             setDebugLog({
               time: new Date().toISOString(),
-              msg: `收到前板数据: ${parserFrontBoardData(eventData)}`,
+              msg: `收到前板数据: ${parserData1}`,
             });
-            setFrontBoardData(parserFrontBoardData(eventData));
+            setFrontBoardData(parserData1);
             break;
           case GlobalConst.mks:
-            const temp13 = String(listStr?.[2]);
-            eventBus.publish(new MksEvent(temp13).eventName, new MksEvent(eventData).data);
+            const pstr2 = listStr?.slice(2).join(':');
+            const parserData2 = parserMksData(pstr2);
             setDebugLog({
               time: new Date().toISOString(),
-              msg: `收到MKS数据: ${parserMksData(eventData)}`,
+              msg: `收到MKS数据: ${parserData2}`,
             });
-            setMksData(parserMksData(eventData));
+            setMksData(parserData2);
             break;
           default:
         }
