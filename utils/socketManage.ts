@@ -237,7 +237,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到后板数据: ${parserBackBoardData(eventData)}`,
             });
-            setBackBoardData(parserBackBoardData(temp11));
+            setBackBoardData(parserBackBoardData(eventData));
             break;
           case GlobalConst.frontBoard:
             const temp12 = String(listStr?.[2]);
@@ -249,7 +249,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到前板数据: ${parserFrontBoardData(eventData)}`,
             });
-            setFrontBoardData(parserFrontBoardData(temp12));
+            setFrontBoardData(parserFrontBoardData(eventData));
             break;
           case GlobalConst.mks:
             const temp13 = String(listStr?.[2]);
@@ -258,7 +258,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到MKS数据: ${parserMksData(eventData)}`,
             });
-            setMksData(parserMksData(temp13));
+            setMksData(parserMksData(eventData));
             break;
           default:
         }
