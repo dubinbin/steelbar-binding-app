@@ -161,7 +161,8 @@ export class SocketManage {
 
       if (commandPrefix === GlobalConst.forwardUp) {
         // 正确使用 store 写入调试日志
-        const { setDebugLog, setBackBoardData, setMksData, setFrontBoardData } = useStore.getState();
+        const { setDebugLog, setBackBoardData, setMksData, setFrontBoardData } =
+          useStore.getState();
         setDebugLog({
           time: new Date().toISOString(),
           msg: `收到命令: ${eventData}`,
@@ -236,7 +237,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到后板数据: ${parserBackBoardData(eventData)}`,
             });
-            setBackBoardData(parserBackBoardData(eventData));
+            setBackBoardData(parserBackBoardData(temp11));
             break;
           case GlobalConst.frontBoard:
             const temp12 = String(listStr?.[2]);
@@ -248,7 +249,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到前板数据: ${parserFrontBoardData(eventData)}`,
             });
-            setFrontBoardData(parserFrontBoardData(eventData));
+            setFrontBoardData(parserFrontBoardData(temp12));
             break;
           case GlobalConst.mks:
             const temp13 = String(listStr?.[2]);
@@ -257,7 +258,7 @@ export class SocketManage {
               time: new Date().toISOString(),
               msg: `收到MKS数据: ${parserMksData(eventData)}`,
             });
-            setMksData(parserMksData(eventData));
+            setMksData(parserMksData(temp13));
             break;
           default:
         }
