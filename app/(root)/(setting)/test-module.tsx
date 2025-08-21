@@ -71,6 +71,12 @@ export default function TestModule() {
       case Command.lunStop:
         sendCmdDispatch(Command.lunStop);
         break;
+      case Command.GunTrigger:
+        sendCmdDispatch(Command.GunTrigger);
+        break;
+      case Command.GunReboot:
+        sendCmdDispatch(Command.GunReboot);
+        break;
       default:
         break;
     }
