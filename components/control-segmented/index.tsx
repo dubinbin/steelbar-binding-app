@@ -8,7 +8,7 @@ import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import { sendCmdDispatch } from '@/utils/helper';
 
 export const ControlSegmented = () => {
-  const { robotStatus, setRobotStatus } = useStore((state) => state);
+  const { robotStatus, setRobotStatus, setDebugLog } = useStore((state) => state);
   const { t } = useTranslation();
   const sendCmd = (mode: ROBOT_CURRENT_MODE) => {
     if (mode === ROBOT_CURRENT_MODE.LOCKED) {
@@ -18,6 +18,25 @@ export const ControlSegmented = () => {
     } else if (mode === ROBOT_CURRENT_MODE.AUTO) {
       sendCmdDispatch(Command.autoModel);
     }
+  };
+
+  const sendAutoCmdInit = () => {
+    const commands = [
+      Command.noLashed,
+      Command.LeftChange,
+      Command.goForwardInAutoMode,
+      Command.EndAutoMode,
+    ];
+
+    commands.forEach((command, index) => {
+      setTimeout(() => {
+        setDebugLog({
+          time: new Date().toISOString(),
+          msg: `sendCmdDispatch: ${command}`,
+        });
+        sendCmdDispatch(command);
+      }, index * 100);
+    });
   };
 
   return (
@@ -30,9 +49,12 @@ export const ControlSegmented = () => {
           setRobotStatus({
             currentMode: value as ROBOT_CURRENT_MODE,
           });
+          if (value === ROBOT_CURRENT_MODE.AUTO) {
+            sendAutoCmdInit();
+          }
           if (value !== ROBOT_CURRENT_MODE.AUTO) {
             setRobotStatus({
-              currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
+              currentBindingMode: '',
             });
           }
         }}
@@ -71,7 +93,7 @@ export const ControlSegmented = () => {
       />
       {robotStatus.currentMode === ROBOT_CURRENT_MODE.AUTO ? (
         <SegmentedButtons
-          value={robotStatus.currentBindingMode}
+          value={robotStatus.currentBindingMode || ''}
           density="medium"
           onValueChange={(value) => {
             setRobotStatus({

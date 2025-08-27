@@ -496,7 +496,7 @@ export const Header = () => {
     setRobotStatus({
       robotDangerStatus: true,
       currentMode: ROBOT_CURRENT_MODE.LOCKED,
-      currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
+      currentBindingMode: '',
     });
   };
 

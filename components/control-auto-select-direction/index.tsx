@@ -1,7 +1,6 @@
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
-
 import { Button, TouchableRipple } from 'react-native-paper';
 
 import { ChangeState } from '@/constants';
