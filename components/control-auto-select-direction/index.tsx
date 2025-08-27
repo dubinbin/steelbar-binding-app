@@ -83,25 +83,27 @@ export const ControlAutoSelectDirection = ({
         <TouchableRipple
           onPress={() => switchTopOrDown(DIRECTION.UP)}
           centered
-          style={{ top: -30, opacity: isForwardOrBackward === DIRECTION.UP ? 1 : 0.7 }}
+          style={{ top: -30, opacity: isForwardOrBackward === DIRECTION.UP ? 1 : 0.5 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/top-arrow.png')}
             style={{ width: 50, height: 50 }}
+            tintColor={isForwardOrBackward === DIRECTION.UP ? '#0C5176FF' : '#BABABAFF'}
           />
         </TouchableRipple>
         <TouchableRipple
           onPress={() => switchTopOrDown(DIRECTION.DOWN)}
           centered
-          style={{ top: 30, opacity: isForwardOrBackward === DIRECTION.DOWN ? 1 : 0.7 }}
+          style={{ top: 30, opacity: isForwardOrBackward === DIRECTION.DOWN ? 1 : 0.5 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/down-arrow.png')}
             style={{ width: 50, height: 50 }}
+            tintColor={isForwardOrBackward === DIRECTION.DOWN ? '#0C5176FF' : '#BABABAFF'}
           />
         </TouchableRipple>
       </View>
@@ -137,25 +139,27 @@ export const ControlAutoSelectDirection = ({
         <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.LEFT)}
           centered
-          style={{ left: -30, opacity: isLeftOrRight === DIRECTION.LEFT ? 1 : 0.7 }}
+          style={{ left: -30, opacity: isLeftOrRight === DIRECTION.LEFT ? 1 : 0.5 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/left-arrow.png')}
             style={{ width: 50, height: 50 }}
+            tintColor={isLeftOrRight === DIRECTION.LEFT ? '#0C5176FF' : '#BABABAFF'}
           />
         </TouchableRipple>
         <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.RIGHT)}
           centered
-          style={{ left: 30, opacity: isLeftOrRight === DIRECTION.RIGHT ? 1 : 0.7 }}
+          style={{ left: 30, opacity: isLeftOrRight === DIRECTION.RIGHT ? 1 : 0.5 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
           <Image
             source={require('@/assets/icon/right-arrow.png')}
             style={{ width: 50, height: 50 }}
+            tintColor={isLeftOrRight === DIRECTION.RIGHT ? '#0C5176FF' : '#BABABAFF'}
           />
         </TouchableRipple>
       </View>
