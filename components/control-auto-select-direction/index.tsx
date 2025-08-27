@@ -1,13 +1,13 @@
 import { Image } from 'expo-image';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Button, TouchableRipple } from 'react-native-paper';
 
-import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
-import { debounce, sendCmdDispatch } from '@/utils/helper';
+import { sendCmdDispatch } from '@/utils/helper';
 
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;
@@ -19,34 +19,37 @@ export const ControlAutoSelectDirection = ({
   onStop,
 }: ControlAutoSelectDirectionProps) => {
   const { robotStatus } = useStore((state) => state);
+  const [isLeftOrRight, setIsLeftOrRight] = useState<DIRECTION | undefined>(undefined);
+  const [isForwardOrBackward, setIsForwardOrBackward] = useState<DIRECTION | undefined>(undefined);
   const { t } = useTranslation();
 
-  const switchLeftOrRight = debounce((direction: DIRECTION) => {
-    if (direction === DIRECTION.LEFT) {
-      // 左右移动要等变轨完成
-      if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.LeftChange);
-      }
-    } else if (direction === DIRECTION.RIGHT) {
-      if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.RightChange);
-      }
+  const switchLeftOrRight = (direction: DIRECTION) => {
+    if (isLeftOrRight === direction) {
+      setIsLeftOrRight(undefined);
+      return;
     }
-  }, 400);
 
-  const switchTop = (isPressed: boolean) => {
-    if (isPressed) {
-      sendCmdDispatch(Command.goForwardInAutoMode);
-    } else {
-      sendCmdDispatch(Command.release);
+    if (direction === DIRECTION.LEFT) {
+      sendCmdDispatch(Command.LeftChange);
+      setIsLeftOrRight(DIRECTION.LEFT);
+    } else if (direction === DIRECTION.RIGHT) {
+      sendCmdDispatch(Command.RightChange);
+      setIsLeftOrRight(DIRECTION.RIGHT);
     }
   };
 
-  const switchDown = (isPressed: boolean) => {
-    if (isPressed) {
+  const switchTopOrDown = (direction: DIRECTION) => {
+    if (isForwardOrBackward === direction) {
+      setIsForwardOrBackward(undefined);
+      return;
+    }
+
+    if (direction === DIRECTION.UP) {
+      sendCmdDispatch(Command.goForwardInAutoMode);
+      setIsForwardOrBackward(DIRECTION.UP);
+    } else if (direction === DIRECTION.DOWN) {
       sendCmdDispatch(Command.goBackInAutoMode);
-    } else {
-      sendCmdDispatch(Command.release);
+      setIsForwardOrBackward(DIRECTION.DOWN);
     }
   };
 
@@ -78,9 +81,9 @@ export const ControlAutoSelectDirection = ({
 
       <View className="absolute left-0 top-0 h-full w-full flex-col items-center justify-center gap-y-10">
         <TouchableRipple
-          onPress={() => switchTop(true)}
+          onPress={() => switchTopOrDown(DIRECTION.UP)}
           centered
-          style={{ top: -30 }}
+          style={{ top: -30, opacity: isForwardOrBackward === DIRECTION.UP ? 1 : 0.7 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
@@ -90,9 +93,9 @@ export const ControlAutoSelectDirection = ({
           />
         </TouchableRipple>
         <TouchableRipple
-          onPress={() => switchDown(true)}
+          onPress={() => switchTopOrDown(DIRECTION.DOWN)}
           centered
-          style={{ top: 30 }}
+          style={{ top: 30, opacity: isForwardOrBackward === DIRECTION.DOWN ? 1 : 0.7 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
@@ -134,7 +137,7 @@ export const ControlAutoSelectDirection = ({
         <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.LEFT)}
           centered
-          style={{ left: -30 }}
+          style={{ left: -30, opacity: isLeftOrRight === DIRECTION.LEFT ? 1 : 0.7 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
@@ -146,7 +149,7 @@ export const ControlAutoSelectDirection = ({
         <TouchableRipple
           onPress={() => switchLeftOrRight(DIRECTION.RIGHT)}
           centered
-          style={{ left: 30 }}
+          style={{ left: 30, opacity: isLeftOrRight === DIRECTION.RIGHT ? 1 : 0.7 }}
           className="rounded-full px-2 py-2"
           borderless
           rippleColor="rgba(0, 0, 0, .32)">
