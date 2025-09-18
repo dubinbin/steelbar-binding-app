@@ -4,6 +4,7 @@
     "settings": "設置",
     "start": "開始",
     "pause": "暫停",
+    "stop": "结束",
     "paramsSetting": "參數設置",
     "softStop": "軟急停",
     "cancel": "取消",

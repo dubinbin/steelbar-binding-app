@@ -4,6 +4,7 @@
       "settings": "Settings",
       "start": "Start",
       "pause": "Pause",
+      "stop": "Stop",
       "collapse": "Collapse",
       "paramsSetting": "Parameter settings",
       "softStop": "Soft Emergency Stop",

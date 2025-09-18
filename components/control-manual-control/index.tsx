@@ -7,7 +7,7 @@ import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
-import { debounce, sendCmdDispatch } from '@/utils/helper';
+import { debounce, sendCmdDispatch, sendCmdWithRepeat } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
 
 export const ControlManualControl = () => {
@@ -38,7 +38,9 @@ export const ControlManualControl = () => {
     if (isPressed) {
       sendCmdDispatch(Command.goForward);
     } else {
-      sendCmdDispatch(Command.release);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.release);
+      });
     }
   };
 
@@ -46,7 +48,9 @@ export const ControlManualControl = () => {
     if (isPressed) {
       sendCmdDispatch(Command.goBack);
     } else {
-      sendCmdDispatch(Command.release);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.release);
+      });
     }
   };
 

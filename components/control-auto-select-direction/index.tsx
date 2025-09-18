@@ -24,11 +24,6 @@ export const ControlAutoSelectDirection = ({
   const { t } = useTranslation();
 
   const switchLeftOrRight = (direction: DIRECTION) => {
-    if (isLeftOrRight === direction) {
-      setIsLeftOrRight(undefined);
-      return;
-    }
-
     if (direction === DIRECTION.LEFT) {
       sendCmdDispatch(Command.LeftChange);
       setIsLeftOrRight(DIRECTION.LEFT);
@@ -39,11 +34,6 @@ export const ControlAutoSelectDirection = ({
   };
 
   const switchTopOrDown = (direction: DIRECTION) => {
-    if (isForwardOrBackward === direction) {
-      setIsForwardOrBackward(undefined);
-      return;
-    }
-
     if (direction === DIRECTION.UP) {
       sendCmdDispatch(Command.goForwardInAutoMode);
       setIsForwardOrBackward(DIRECTION.UP);
@@ -64,7 +54,7 @@ export const ControlAutoSelectDirection = ({
           onPress={() => {
             onStart();
           }}>
-          开始
+          {t('common.start')}
         </Button>
 
         <Button
@@ -75,7 +65,7 @@ export const ControlAutoSelectDirection = ({
           onPress={() => {
             onStop();
           }}>
-          停止
+          {t('common.stop')}
         </Button>
       </View>
 

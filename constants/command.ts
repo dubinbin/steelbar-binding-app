@@ -37,3 +37,7 @@ export enum Command {
   BeginAutoMode = 36, // 自动模式开始
   EndAutoMode = 37, // 自动模式结束
 }
+
+export enum userDefaultEvent {
+  DIRECITON_CHANGE = 'DIRECITON_CHANGE',
+}
