@@ -1,36 +1,21 @@
+/**
+ * update
+ * 暂时取消变轨完成判断，避免变轨过程中无法控制 2025-10-14, 互斥逻辑由机器端控制，避免变轨过程中无法控制
+ */
+
 import { Image } from 'expo-image';
-import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
-import { ChangeState } from '@/constants';
 import { Command } from '@/constants/command';
-import useStore from '@/store';
 import { DIRECTION } from '@/types';
 import { debounce, sendCmdDispatch, sendCmdWithRepeat } from '@/utils/helper';
-import { showNotifier } from '@/utils/notifier';
-
 export const ControlManualControl = () => {
-  const { robotStatus } = useStore((state) => state);
-  const { t } = useTranslation();
-  // 为什么不用switch 因为似乎switch对于里面再定义复杂逻辑会提示不能重复定义let/const等逻辑
   const switchLeftOrRight = debounce((direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
-      // 左右移动要等变轨完成
-      if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.goLeft);
-      } else {
-        showNotifier({
-          title: t('common.changingOrbitTips'),
-          type: 'error',
-          duration: 3000,
-          onPress: () => {},
-        });
-      }
+      sendCmdDispatch(Command.goLeft);
     } else if (direction === DIRECTION.RIGHT) {
-      if (robotStatus.changeState === ChangeState.finish) {
-        sendCmdDispatch(Command.goRight);
-      }
+      sendCmdDispatch(Command.goRight);
     }
   }, 400);
 
