@@ -7,7 +7,7 @@ import { Command, userDefaultEvent } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION, ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
 import eventBus from '@/utils/eventBus';
-import { sendCmdDispatch } from '@/utils/helper';
+import { sendCmdDispatch, sendCmdWithRepeat } from '@/utils/helper';
 
 export const ControlSegmented = () => {
   const { robotStatus, setRobotStatus, setDebugLog } = useStore((state) => state);
@@ -15,9 +15,21 @@ export const ControlSegmented = () => {
   const currentMode = useRef<ROBOT_CURRENT_MODE>(ROBOT_CURRENT_MODE.LOCKED);
   const sendCmd = (mode: ROBOT_CURRENT_MODE) => {
     if (mode === ROBOT_CURRENT_MODE.LOCKED) {
-      sendCmdDispatch(Command.lockUp);
+      sendCmdWithRepeat(
+        () => {
+          sendCmdDispatch(Command.lockUp);
+        },
+        2,
+        30
+      );
     } else if (mode === ROBOT_CURRENT_MODE.MANUAL) {
-      sendCmdDispatch(Command.manualModel);
+      sendCmdWithRepeat(
+        () => {
+          sendCmdDispatch(Command.manualModel);
+        },
+        2,
+        30
+      );
     } else if (mode === ROBOT_CURRENT_MODE.AUTO) {
       sendCmdDispatch(Command.autoModel);
       sendAutoCmdInit();
@@ -78,10 +90,6 @@ export const ControlSegmented = () => {
         value={robotStatus.currentMode}
         density="medium"
         onValueChange={(value) => {
-          if (currentMode.current === value) {
-            return;
-          }
-          currentMode.current = value as ROBOT_CURRENT_MODE;
           setRobotStatus({
             currentMode: value as ROBOT_CURRENT_MODE,
           });

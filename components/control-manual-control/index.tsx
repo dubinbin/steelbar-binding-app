@@ -40,7 +40,7 @@ export const ControlManualControl = () => {
     } else {
       sendCmdWithRepeat(() => {
         sendCmdDispatch(Command.release);
-      });
+      }, 2);
     }
   };
 
@@ -50,7 +50,7 @@ export const ControlManualControl = () => {
     } else {
       sendCmdWithRepeat(() => {
         sendCmdDispatch(Command.release);
-      });
+      }, 2);
     }
   };
 
