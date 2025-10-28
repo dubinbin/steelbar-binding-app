@@ -1,4 +1,3 @@
-import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
@@ -10,9 +9,8 @@ import eventBus from '@/utils/eventBus';
 import { sendCmdDispatch, sendCmdWithRepeat } from '@/utils/helper';
 
 export const ControlSegmented = () => {
-  const { robotStatus, setRobotStatus, setDebugLog } = useStore((state) => state);
+  const { robotStatus, setRobotStatus } = useStore((state) => state);
   const { t } = useTranslation();
-  const currentMode = useRef<ROBOT_CURRENT_MODE>(ROBOT_CURRENT_MODE.LOCKED);
   const sendCmd = (mode: ROBOT_CURRENT_MODE) => {
     if (mode === ROBOT_CURRENT_MODE.LOCKED) {
       sendCmdWithRepeat(
@@ -31,58 +29,71 @@ export const ControlSegmented = () => {
         30
       );
     } else if (mode === ROBOT_CURRENT_MODE.AUTO) {
-      sendCmdDispatch(Command.autoModel);
-      sendAutoCmdInit();
+      sendCmdWithRepeat(
+        () => {
+          sendCmdDispatch(Command.autoModel);
+        },
+        2,
+        30
+      );
+      // 发送默认方向
+      eventBus.publish(userDefaultEvent.DIRECITON_CHANGE, {
+        leftOrRight: DIRECTION.LEFT,
+        forwardOrBackward: DIRECTION.UP,
+      });
+      setRobotStatus({
+        currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
+      });
     }
   };
 
-  const sendAutoCmdInit = useCallback(() => {
-    const commands = [
-      Command.noLashed,
-      Command.LeftChange,
-      Command.goForwardInAutoMode,
-      Command.EndAutoMode,
-    ];
+  // const sendAutoCmdInit = useCallback(() => {
+  //   const commands = [
+  //     Command.noLashed,
+  //     Command.LeftChange,
+  //     Command.goForwardInAutoMode,
+  //     Command.EndAutoMode,
+  //   ];
 
-    setRobotStatus({
-      currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
-    });
+  //   setRobotStatus({
+  //     currentBindingMode: ROBOT_WORK_MODE.WITHOUT_BINDING,
+  //   });
 
-    // 只在首次进入自动模式时设置默认方向，不要强制重置用户已选择的方向
-    eventBus.publish(userDefaultEvent.DIRECITON_CHANGE, {
-      leftOrRight: DIRECTION.LEFT,
-      forwardOrBackward: DIRECTION.UP,
-    });
+  //   // 只在首次进入自动模式时设置默认方向，不要强制重置用户已选择的方向
+  //   eventBus.publish(userDefaultEvent.DIRECITON_CHANGE, {
+  //     leftOrRight: DIRECTION.LEFT,
+  //     forwardOrBackward: DIRECTION.UP,
+  //   });
 
-    // 使用requestAnimationFrame优化时序控制，避免阻塞UI
-    const sendCommandsSequentially = (commandIndex: number) => {
-      if (commandIndex >= commands.length) {
-        return;
-      }
+  //   // 使用requestAnimationFrame优化时序控制，避免阻塞UI
+  //   const sendCommandsSequentially = (commandIndex: number) => {
+  //     if (commandIndex >= commands.length) {
+  //       return;
+  //     }
 
-      const command = commands[commandIndex];
+  //     const command = commands[commandIndex];
 
-      // 使用requestAnimationFrame确保在下一帧执行，不阻塞UI
-      requestAnimationFrame(() => {
-        setDebugLog({
-          time: new Date().toISOString(),
-          msg: `sendCmdDispatch: ${command}`,
-        });
-        sendCmdDispatch(command);
+  //     // 使用requestAnimationFrame确保在下一帧执行，不阻塞UI
+  //     requestAnimationFrame(() => {
+  //       setDebugLog({
+  //         time: new Date().toISOString(),
+  //         msg: `sendCmdDispatch: ${command}`,
+  //       });
+  //       sendCmdDispatch(command);
 
-        // 继续发送下一个指令，使用微任务队列避免阻塞
-        if (commandIndex + 1 < commands.length) {
-          // 使用Promise.resolve().then()创建微任务，比setTimeout更高效
-          Promise.resolve().then(() => {
-            sendCommandsSequentially(commandIndex + 1);
-          });
-        }
-      });
-    };
+  //       // 继续发送下一个指令，使用微任务队列避免阻塞
+  //       if (commandIndex + 1 < commands.length) {
+  //         // 使用Promise.resolve().then()创建微任务，比setTimeout更高效
+  //         Promise.resolve().then(() => {
+  //           sendCommandsSequentially(commandIndex + 1);
+  //         });
+  //       }
+  //     });
+  //   };
 
-    // 开始发送指令序列
-    sendCommandsSequentially(0);
-  }, [setRobotStatus, setDebugLog]);
+  //   // 开始发送指令序列
+  //   sendCommandsSequentially(0);
+  // }, [setRobotStatus, setDebugLog]);
 
   return (
     <View className="mb-10 mt-4 w-full gap-y-5">

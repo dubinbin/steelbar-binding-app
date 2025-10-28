@@ -18,9 +18,6 @@ import {
   DownEvent,
   WifiEvent,
   GunErrorEvent,
-  BackBoardEvent,
-  FrontBoardEvent,
-  MksEvent,
 } from './events';
 import { parserBackBoardData, parserFrontBoardData, parserMksData } from './helper';
 import { showNotifier } from './notifier';
@@ -39,12 +36,12 @@ export class SocketManage {
 
   // 心跳相关属性
   private heartbeatInterval: NodeJS.Timeout | null = null;
-  private heartbeatMessage = `${GlobalConst.forwardCmd}:heartbeat:${Date.now()}\n`;
+  private heartbeatMessage = `${GlobalConst.forwardCmd}:heartbeat`;
   private heartbeatIntervalMs = 15000; // 15秒发送一次心跳
   private heartbeatTimeout: NodeJS.Timeout | null = null;
   private heartbeatTimeoutMs = 5000; // 5秒心跳超时
   private heartbeatMissedCount = 0;
-  private maxHeartbeatMissed = Number.MAX_SAFE_INTEGER; // 允许连续3次心跳未响应
+  private maxHeartbeatMissed = 3; // 允许连续3次心跳未响应
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 3000; // 3秒后重试
