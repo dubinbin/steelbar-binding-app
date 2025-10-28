@@ -319,8 +319,19 @@ export class SocketManage {
           // 不立即处理连接丢失，而是增加心跳未响应计数
           this.handleHeartbeatMissed();
         }
+      } else {
+        console.warn('心跳跳过，连接状态为false');
       }
     }, this.heartbeatIntervalMs);
+  }
+
+  // 恢复心跳（用于从后台恢复）
+  public resumeHeartbeat() {
+    console.log('恢复心跳');
+    this.heartbeatMissedCount = 0;
+    if (!this.heartbeatInterval) {
+      this.startHeartbeat();
+    }
   }
 
   // 设置心跳超时

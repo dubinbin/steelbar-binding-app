@@ -81,21 +81,28 @@ export const Bootstrap = () => {
   }, []);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
+    const socket = SocketManage.getInstance();
+
     switch (nextAppState) {
       // active 相当于 Flutter 中的 resumed - 应用在前台可见且活跃
       case 'active':
-        console.log('return to app');
-        restartConnect(); // 重连wifi
+        console.log('应用回到前台，恢复心跳和连接');
+        // 恢复心跳
+        socket.resumeHeartbeat();
+        // 检查连接状态并重连
+        restartConnect();
         break;
 
       // background 相当于 Flutter 中的 paused - 应用在后台运行
       case 'background':
-        // TODO: 处理应用进入后台
+        console.log('应用进入后台，心跳在后台可能被暂停');
+        // 注意：React Native 在后台时 setTimeout/setInterval 可能被暂停
+        // 但 TCP socket 连接本身会保持
         break;
 
       // inactive 应用正在切换状态时(如接电话、切换应用时)
       case 'inactive':
-        // TODO: 处理应用不活跃状态
+        console.log('应用不活跃状态');
         break;
 
       default:
