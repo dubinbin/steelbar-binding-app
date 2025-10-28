@@ -36,7 +36,7 @@ export class SocketManage {
 
   // 心跳相关属性
   private heartbeatInterval: NodeJS.Timeout | null = null;
-  private heartbeatMessage = `${GlobalConst.forwardCmd}:heartbeat`;
+  private heartbeatMessage = `${GlobalConst.forwardCmd}:${Command.Heartbeat}`;
   private heartbeatIntervalMs = 15000; // 15秒发送一次心跳
   private heartbeatTimeout: NodeJS.Timeout | null = null;
   private heartbeatTimeoutMs = 5000; // 5秒心跳超时
@@ -146,7 +146,7 @@ export class SocketManage {
       const eventData = event;
 
       // 处理心跳响应
-      if (eventData.includes('heartbeat_response')) {
+      if (eventData.includes('ht')) {
         this.handleHeartbeatResponse();
         return;
       }

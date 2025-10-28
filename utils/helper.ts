@@ -1,4 +1,3 @@
-
 import { NetworkInfo } from 'react-native-network-info';
 import WifiManager from 'react-native-wifi-reborn';
 

@@ -36,6 +36,7 @@ export enum Command {
   RightChange = 35, // 右变轨 自动模式
   BeginAutoMode = 36, // 自动模式开始
   EndAutoMode = 37, // 自动模式结束
+  Heartbeat = 38, // 心跳
 }
 
 export enum userDefaultEvent {
