@@ -19,7 +19,7 @@ import {
   WifiEvent,
   GunErrorEvent,
 } from './events';
-import { parserBackBoardData, parserFrontBoardData, parserMksData } from './helper';
+import { globalGetConnect, parserBackBoardData, parserFrontBoardData, parserMksData } from './helper';
 import { showNotifier } from './notifier';
 
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
@@ -135,18 +135,26 @@ export class SocketManage {
   onDone() {
     // 停止心跳
     this.stopHeartbeat();
-
     ConnectDeviceInfo.disConnect();
     eventBus.publish(new WifiEvent(false).eventName, new WifiEvent(false).eventName);
-    GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.wifiDisconnected'));
+    showNotifier({
+      title: i18n.t('wifi.reconnecting'),
+      message: '',
+      type: 'info',
+      duration: 3000,
+      onPress: () => {},
+    });
+    setTimeout(() => {
+      globalGetConnect();
+    }, 2000);
   }
 
   onData(event: string) {
     try {
       const eventData = event;
 
-      // 处理心跳响应
-      if (eventData.includes('ht')) {
+      // 处理心跳响应, 如果有消息过来，则认为是心跳响应，没挂
+      if (eventData.includes('up')) {
         this.handleHeartbeatResponse();
         return;
       }
@@ -310,7 +318,6 @@ export class SocketManage {
         try {
           // 发送心跳包
           this.writeData(this.heartbeatMessage);
-          console.log('心跳包已发送');
 
           // 设置心跳超时
           this.setHeartbeatTimeout();
@@ -327,7 +334,6 @@ export class SocketManage {
 
   // 恢复心跳（用于从后台恢复）
   public resumeHeartbeat() {
-    console.log('恢复心跳');
     this.heartbeatMissedCount = 0;
     if (!this.heartbeatInterval) {
       this.startHeartbeat();
@@ -343,7 +349,6 @@ export class SocketManage {
 
     // 设置新的超时
     this.heartbeatTimeout = setTimeout(() => {
-      console.log('心跳超时，未收到响应');
       this.handleHeartbeatMissed();
     }, this.heartbeatTimeoutMs);
   }
@@ -355,8 +360,9 @@ export class SocketManage {
 
     // 只有当连续多次心跳未响应时，才考虑重连
     if (this.heartbeatMissedCount >= this.maxHeartbeatMissed) {
+      // 暂时不处理，机器人端没办法升级，只能等机器人端升级了
       console.log('心跳连续多次未响应，尝试重连');
-      this.handleConnectionLost();
+      // this.handleConnectionLost();
     }
   }
 

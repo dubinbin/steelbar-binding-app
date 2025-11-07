@@ -26,6 +26,7 @@ interface State {
     electric: number;
     wifiConnectStatus: boolean;
     currentConnectWifiSSID: string;
+    currentConnectWifiPassword: string;
   };
   setRobotStatus: (newInfo: Partial<State['robotStatus']>) => void;
   userInfo: {
@@ -108,6 +109,7 @@ export const useStore = create<State>((set) => ({
     changeState: ChangeState.finish, // 机器变轨状态
     wifiConnectStatus: false, // WiFi连接状态
     currentConnectWifiSSID: '', // WiFi连接SSID
+    currentConnectWifiPassword: '', // WiFi连接密码
   },
   data_inspect: {
     overage_num: 0, // 卷丝余量

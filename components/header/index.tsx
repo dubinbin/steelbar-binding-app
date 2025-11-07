@@ -31,7 +31,7 @@ import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
 import { eventBusKey } from '@/constants/event';
 import useStore from '@/store';
-import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
+import { ROBOT_CURRENT_MODE } from '@/types';
 import eventBus from '@/utils/eventBus';
 import { delayed, globalGetConnect, sendCmdDispatch } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
@@ -296,6 +296,7 @@ export const Header = () => {
 
       setRobotStatus({
         currentConnectWifiSSID: ssid,
+        currentConnectWifiPassword: savedPassword,
       });
 
       GlobalActivityIndicatorManager.current?.hide();
@@ -307,7 +308,9 @@ export const Header = () => {
       });
 
       // 重新连接socket
-      handleConnectToSocketAgain();
+      setTimeout(() => {
+        handleConnectToSocketAgain();
+      }, 200);
     } catch (error) {
       console.error('autoReconnectWifi error', error);
       GlobalActivityIndicatorManager.current?.hide();
@@ -547,7 +550,7 @@ export const Header = () => {
     try {
       setWifiChooseListVisible(false);
       GlobalActivityIndicatorManager.current?.show(
-        `${t('wifi.connecting')} ${currentSelectedWifi.current}...`,
+        `${t('common.connecting')} ${currentSelectedWifi.current}...`,
         0
       );
 
@@ -560,12 +563,15 @@ export const Header = () => {
         onPress: () => {},
       });
 
-      // 重新连接socket
-      handleConnectToSocketAgain();
-
       setRobotStatus({
         currentConnectWifiSSID: currentSelectedWifi.current,
+        currentConnectWifiPassword: password,
       });
+
+      setTimeout(() => {
+        // 重新连接socket
+        handleConnectToSocketAgain();
+      }, 200);
     } catch (error) {
       console.error('connectToWifi error', error);
       GlobalActivityIndicatorManager.current?.hide();
@@ -593,6 +599,16 @@ export const Header = () => {
         <View className="flex flex-row items-center gap-5">
           <View className="flex flex-row items-center gap-5">
             {!isLoginPage ? (
+              <Button
+                icon={robotStatus.robotDangerStatus ? 'pause' : 'play'}
+                mode="contained"
+                buttonColor="red"
+                onPress={handleForcePause}>
+                {t('common.softStop')}
+              </Button>
+            ) : null}
+
+            {!isLoginPage ? (
               <TouchableOpacity
                 className="flex flex-row items-center gap-2 rounded-full bg-white p-3 px-4"
                 onPress={openWifiSetting}>
@@ -617,16 +633,6 @@ export const Header = () => {
                 <Gear size={18} weight="bold" />
                 <Text className="text-sm text-gray-800">{t('common.settings')}</Text>
               </TouchableOpacity>
-            ) : null}
-
-            {!isLoginPage ? (
-              <Button
-                icon={robotStatus.robotDangerStatus ? 'pause' : 'play'}
-                mode="contained"
-                buttonColor="red"
-                onPress={handleForcePause}>
-                {t('common.softStop')}
-              </Button>
             ) : null}
           </View>
           {renderBatteryIcon()}
@@ -678,9 +684,9 @@ export const Header = () => {
                     )}
                   </View>
                   {robotStatus.currentConnectWifiSSID === item.SSID ? (
-                    <Text className="text-md text-gray-800">{t('wifi.connected')}</Text>
+                    <Text className="text-md text-gray-800">{t('common.connected')}</Text>
                   ) : (
-                    <Text className="text-md text-gray-800">{t('wifi.connect')}</Text>
+                    <Text className="text-md text-gray-800">{t('common.connect')}</Text>
                   )}
                 </TouchableOpacity>
               )}

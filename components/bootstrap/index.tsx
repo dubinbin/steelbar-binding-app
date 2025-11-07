@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppState, AppStateStatus } from 'react-native';
+import WifiManager from 'react-native-wifi-reborn';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 import { EventHandler } from './event';
@@ -88,7 +89,7 @@ export const Bootstrap = () => {
       case 'active':
         console.log('应用回到前台，恢复心跳和连接');
         // 恢复心跳
-        socket.resumeHeartbeat();
+        // socket.resumeHeartbeat();
         // 检查连接状态并重连
         restartConnect();
         break;
@@ -111,10 +112,24 @@ export const Bootstrap = () => {
   };
 
   const restartConnect = async () => {
-    if (!ConnectDeviceInfo.connectStatus) {
+    if (!ConnectDeviceInfo.connectStatus || !SocketManage.getInstance().isConnected()) {
       GlobalActivityIndicatorManager.current?.show(t('robot.waitingForReconnection'), 0);
 
       await delayed(2000);
+
+      const store = useStore.getState();
+      const { currentConnectWifiSSID, currentConnectWifiPassword } = store.robotStatus;
+      if (
+        currentConnectWifiSSID.indexOf(GlobalConst.wifiName) > -1 &&
+        currentConnectWifiPassword !== ''
+      ) {
+        await WifiManager.connectToProtectedSSID(
+          currentConnectWifiSSID,
+          currentConnectWifiPassword,
+          true,
+          false
+        );
+      }
 
       globalGetConnect();
 

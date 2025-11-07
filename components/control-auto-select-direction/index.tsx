@@ -7,7 +7,7 @@ import { Button, TouchableRipple } from 'react-native-paper';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { DIRECTION } from '@/types';
-import { sendCmdDispatch } from '@/utils/helper';
+import { sendCmdDispatch, sendCmdWithRepeat } from '@/utils/helper';
 
 interface ControlAutoSelectDirectionProps {
   onStart: () => void;
@@ -25,20 +25,28 @@ export const ControlAutoSelectDirection = ({
 
   const switchLeftOrRight = (direction: DIRECTION) => {
     if (direction === DIRECTION.LEFT) {
-      sendCmdDispatch(Command.LeftChange);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.LeftChange);
+      }, 2);
       setIsLeftOrRight(DIRECTION.LEFT);
     } else if (direction === DIRECTION.RIGHT) {
-      sendCmdDispatch(Command.RightChange);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.RightChange);
+      }, 2);
       setIsLeftOrRight(DIRECTION.RIGHT);
     }
   };
 
   const switchTopOrDown = (direction: DIRECTION) => {
     if (direction === DIRECTION.UP) {
-      sendCmdDispatch(Command.goForwardInAutoMode);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.goForwardInAutoMode);
+      }, 2);
       setIsForwardOrBackward(DIRECTION.UP);
     } else if (direction === DIRECTION.DOWN) {
-      sendCmdDispatch(Command.goBackInAutoMode);
+      sendCmdWithRepeat(() => {
+        sendCmdDispatch(Command.goBackInAutoMode);
+      }, 2);
       setIsForwardOrBackward(DIRECTION.DOWN);
     }
   };
