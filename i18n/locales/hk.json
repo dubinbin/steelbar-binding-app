@@ -54,6 +54,8 @@
     "currentSkipBindingCount": "當前跳扎跳數",
     "releaseDangerStatusTips": "解除危險狀態",
     "longPressReleaseDangerStatusTips": "長按解除危險狀態",
+    "lockScreenTips": "鎖屏",
+    "longPressUnlockScreenTips": "長按解鎖屏幕",
     "autoFindPoint": "自動尋點",
     "antiFallLaser": "防墜激光",
     "ultrasonic": "超聲波",
@@ -85,6 +87,8 @@
     "reconnect": "重連",
     "selectWifi": "選擇WiFi",
     "detected": "檢測到",
+    "connectDialogTips": "WIFI/SOCKET連接提示",
+    "connectDialogTitle": "如果連接失敗，可點擊右上角Wi-Fi圖標選擇ESP-前綴WiFi進行手動連接",
     "enterPassword": "請輸入密碼",
     "autoConnect": "是否自動連接",
     "savedPassword": "的保存密碼",
@@ -120,7 +124,12 @@
     "notRobotWifi": "這可能不是機器人WiFi",
     "socketNotConnected": "socket未正確連接",
     "checkNetworkConnection": "請檢查網絡連接",
-    "networkDisconnected": "網絡連接已斷開，正在嘗試重連"
+    "networkDisconnected": "網絡連接已斷開，正在嘗試重連",
+    "socketConnected": "設備已成功連接",
+    "connectionFailed": "連接失敗",
+    "retrying": "正在重試",
+    "connectionFailedTitle": "連接失敗",
+    "connectionFailedMessage": "已嘗試3次連接均失敗，請檢查網絡設置或設備狀態"
   },
   "errors": {
     "emptyCredentials": "用戶名和密碼不能為空",

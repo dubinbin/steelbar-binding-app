@@ -15,6 +15,7 @@ interface State {
   setCanLoginInfo: (newInfo: { [key: string]: any }) => void;
   robotStatus: {
     robotDangerStatus: boolean;
+    robotLockedStatus: boolean;
     direction: Map<DIRECTION, boolean>;
     currentMode: ROBOT_CURRENT_MODE;
     currentBindingMode: ROBOT_WORK_MODE | '';
@@ -93,6 +94,7 @@ export const useStore = create<State>((set) => ({
   robotStatus: {
     electric: 100, // 电量
     robotDangerStatus: false, // 软急停状态
+    robotLockedStatus: false, // 锁止状态
     direction: new Map([
       // 前进方向
       [DIRECTION.UP, false],

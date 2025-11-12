@@ -54,6 +54,8 @@
       "currentSkipBindingCount": "Current skip binding count",
       "releaseDangerStatusTips": "Release danger status",
       "longPressReleaseDangerStatusTips": "Long press to release danger status",
+      "lockScreenTips": "Lock screen",
+      "longPressUnlockScreenTips": "Long press to unlock screen",
       "autoFindPoint": "Auto find point",
       "antiFallLaser": "Anti fall laser",
       "ultrasonic": "Ultrasonic",
@@ -85,6 +87,8 @@
       "reconnect": "Reconnect",
       "selectWifi": "Select WiFi",
       "detected": "Detected",
+      "connectDialogTips": "WIFI/SOCKET connection prompt",
+      "connectDialogTitle": "If the connection fails, you can click the Wi-Fi icon in the upper right corner to select the ESP-prefix WiFi for manual connection",
       "autoConnect": "Auto connect",
       "savedPassword": "saved password",
       "enterPassword": "Please enter password",
@@ -120,7 +124,12 @@
       "notRobotWifi": "This may not be a robot WiFi",
       "socketNotConnected": "socket not connected",
       "checkNetworkConnection": "Please check network connection",
-      "networkDisconnected": "Network connection lost, reconnecting..."
+      "networkDisconnected": "Network connection lost, reconnecting...",
+      "socketConnected": "Device connected successfully",
+      "connectionFailed": "Connection failed",
+      "retrying": "Retrying",
+      "connectionFailedTitle": "Connection Failed",
+      "connectionFailedMessage": "Failed to connect after 3 attempts. Please check network settings or device status"
     },
     "errors": {
       "emptyCredentials": "Username and password cannot be empty",

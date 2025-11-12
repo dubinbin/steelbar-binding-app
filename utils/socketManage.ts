@@ -19,7 +19,12 @@ import {
   WifiEvent,
   GunErrorEvent,
 } from './events';
-import { globalGetConnect, parserBackBoardData, parserFrontBoardData, parserMksData } from './helper';
+import {
+  globalGetConnect,
+  parserBackBoardData,
+  parserFrontBoardData,
+  parserMksData,
+} from './helper';
 import { showNotifier } from './notifier';
 
 import { GlobalActivityIndicatorManager } from '@/components/activity-indicator-global';
@@ -45,6 +50,11 @@ export class SocketManage {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 3000; // 3秒后重试
+
+  // 初始连接重试相关
+  private initialConnectAttempts = 0;
+  private maxInitialConnectAttempts = 3;
+  private initialConnectDelay = 2000; // 2秒后重试
 
   // 添加一个缓冲区属性
   private dataBuffer: string = '';
@@ -91,6 +101,8 @@ export class SocketManage {
         ConnectDeviceInfo.setWifiIp(this.ip);
         ConnectDeviceInfo.connectStatus = true;
         this.resetReconnectCount();
+        // 重置初始连接尝试计数
+        this.initialConnectAttempts = 0;
 
         // 启动心跳
         this.startHeartbeat();
@@ -100,7 +112,7 @@ export class SocketManage {
 
         // 发布WiFi连接成功事件
         eventBus.publish(new WifiEvent(true).eventName, new WifiEvent(true).data);
-        GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.connectSuccess'));
+        GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.socketConnected'));
       });
       this.socket = socket;
 
@@ -119,6 +131,8 @@ export class SocketManage {
 
       this.socket?.on('error', (error) => {
         console.error('socket error', error);
+        // 处理初始连接错误
+        this.handleInitialConnectionError();
       });
 
       this.socket?.on('close', () => {
@@ -127,8 +141,8 @@ export class SocketManage {
       });
     } catch (error) {
       console.error('Unable to connect:', error);
-      GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.wificonnectfailed'));
-      ConnectDeviceInfo.disConnect();
+      // 处理初始连接错误
+      this.handleInitialConnectionError();
     }
   }
 
@@ -156,7 +170,6 @@ export class SocketManage {
       // 处理心跳响应, 如果有消息过来，则认为是心跳响应，没挂
       if (eventData.includes('up')) {
         this.handleHeartbeatResponse();
-        return;
       }
 
       // 处理业务消息
@@ -438,6 +451,49 @@ export class SocketManage {
 
   private resetReconnectCount() {
     this.reconnectAttempts = 0;
+  }
+
+  // 处理初始连接错误
+  private handleInitialConnectionError() {
+    // 如果已经连接成功过，则不进行初始连接重试
+    if (ConnectDeviceInfo.connectStatus) {
+      return;
+    }
+
+    this.initialConnectAttempts++;
+    console.log(
+      `初始连接失败，尝试重试 (${this.initialConnectAttempts}/${this.maxInitialConnectAttempts})`
+    );
+
+    if (this.initialConnectAttempts < this.maxInitialConnectAttempts) {
+      // 显示重试提示
+      showNotifier({
+        title: i18n.t('wifi.connectionFailed'),
+        message: `${i18n.t('wifi.retrying')} (${this.initialConnectAttempts}/${this.maxInitialConnectAttempts})`,
+        type: 'warning',
+        duration: 2000,
+        onPress: () => {},
+      });
+
+      // 延迟后重试
+      setTimeout(() => {
+        this.connectSocket();
+      }, this.initialConnectDelay);
+    } else {
+      // 3次都失败，显示最终失败提示
+      console.error('初始连接失败，已达到最大尝试次数');
+      GlobalActivityIndicatorManager.current?.show(i18n.t('wifi.wificonnectfailed'));
+      showNotifier({
+        title: i18n.t('wifi.connectionFailedTitle'),
+        message: i18n.t('wifi.connectionFailedMessage'),
+        type: 'error',
+        duration: 5000,
+        onPress: () => {},
+      });
+      ConnectDeviceInfo.disConnect();
+      // 重置计数，以便下次连接可以重新尝试
+      this.initialConnectAttempts = 0;
+    }
   }
 
   // 断开连接方法

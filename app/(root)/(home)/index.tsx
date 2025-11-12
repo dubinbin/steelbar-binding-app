@@ -5,6 +5,7 @@ import { DangerousStatus } from '@/components/dangerous-status';
 import { DataInspect } from '@/components/data-inspect';
 import { ErrorData } from '@/components/error-data';
 import { Header } from '@/components/header';
+import { LockedStatus } from '@/components/locked-status';
 import { StatusBox } from '@/components/status-box';
 import useStore from '@/store';
 
@@ -17,7 +18,7 @@ const Home = () => {
     <View className="flex w-full">
       <Header />
       {robotStatus.robotDangerStatus ? <DangerousStatus /> : null}
-
+      {robotStatus.robotLockedStatus ? <LockedStatus /> : null}
       <View
         style={{ height: height - headerHeight }}
         className="flex w-full flex-row justify-center px-6 py-5">

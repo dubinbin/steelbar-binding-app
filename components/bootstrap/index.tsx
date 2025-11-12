@@ -7,6 +7,7 @@ import WifiManager from 'react-native-wifi-reborn';
 
 import { GlobalActivityIndicatorManager } from '../activity-indicator-global';
 import { EventHandler } from './event';
+import { GlobalDialogManager } from '../global-dialog';
 
 import { GlobalConst, storage_config } from '@/constants';
 import { Command } from '@/constants/command';
@@ -82,8 +83,6 @@ export const Bootstrap = () => {
   }, []);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
-    const socket = SocketManage.getInstance();
-
     switch (nextAppState) {
       // active 相当于 Flutter 中的 resumed - 应用在前台可见且活跃
       case 'active':
@@ -134,6 +133,12 @@ export const Bootstrap = () => {
       globalGetConnect();
 
       GlobalActivityIndicatorManager.current?.hide();
+
+      GlobalDialogManager.current?.show({
+        title: t('wifi.connectDialogTips'),
+        content: t('wifi.connectDialogTitle'),
+        callback: () => {},
+      });
     }
   };
 

@@ -545,6 +545,12 @@ export const Header = () => {
     setWifiPasswordDialogVisible(false);
   };
 
+  const handleLockScreen = () => {
+    setRobotStatus({
+      robotLockedStatus: true,
+    });
+  };
+
   // 连接到WiFi的核心逻辑
   const connectToWifi = async (password: string) => {
     try {
@@ -607,6 +613,10 @@ export const Header = () => {
                 {t('common.softStop')}
               </Button>
             ) : null}
+
+            <Button icon="lock" mode="contained" buttonColor="#041FA5C0" onPress={handleLockScreen}>
+              {t('common.lockScreenTips')}
+            </Button>
 
             {!isLoginPage ? (
               <TouchableOpacity
