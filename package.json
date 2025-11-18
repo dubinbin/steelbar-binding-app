@@ -9,8 +9,7 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web",
-    "postinstall": "node -e \"const fs=require('fs'),path=require('path');try{const lightningPath=path.join(__dirname,'node_modules','lightningcss');const arm64Path=path.join(__dirname,'node_modules','lightningcss-darwin-arm64','lightningcss.darwin-arm64.node');const x64Path=path.join(__dirname,'node_modules','lightningcss-darwin-x64','lightningcss.darwin-x64.node');const targetArm64=path.join(lightningPath,'lightningcss.darwin-arm64.node');const targetX64=path.join(lightningPath,'lightningcss.darwin-x64.node');[arm64Path,x64Path].forEach((src,i)=>{const target=i?targetX64:targetArm64;if(fs.existsSync(src)){try{if(fs.existsSync(target))fs.unlinkSync(target);fs.symlinkSync(src,target);console.log('✅ Created',path.basename(target))}catch(e){console.log('⚠️ Symlink failed for',path.basename(target))}}});console.log('✅ Lightningcss setup complete')}catch(e){console.log('⚠️ Lightningcss setup skipped:',e.message)}\" || true"
+    "web": "expo start --web"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.1.2",

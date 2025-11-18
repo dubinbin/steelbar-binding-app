@@ -37,6 +37,8 @@ export enum Command {
   BeginAutoMode = 36, // 自动模式开始
   EndAutoMode = 37, // 自动模式结束
   Heartbeat = 38, // 心跳
+  OldTest = 39, // 老化测试
+  stopOldTest = 40, // 停止老化测试
 }
 
 export enum userDefaultEvent {

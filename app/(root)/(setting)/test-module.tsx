@@ -3,12 +3,17 @@ import { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import { Button, Card, Dialog, Icon, Portal } from 'react-native-paper';
 
+import OldTestModal from './old-test-modal';
+
 import { DataMonitor } from '@/components/data-monitor';
 import { Header } from '@/components/header';
 import { LogItem } from '@/components/logs';
+import { GlobalConst } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore from '@/store';
 import { sendCmdDispatch } from '@/utils/helper';
+import { showNotifier } from '@/utils/notifier';
+import { SocketManage } from '@/utils/socketManage';
 
 export default function TestModule() {
   const router = useRouter();
@@ -23,6 +28,8 @@ export default function TestModule() {
     frontBoardData,
   } = useStore((state) => state);
   const [isShowlog, setIsShowLog] = useState(false);
+  const [isShowOldTestModal, setIsShowOldTestModal] = useState(false);
+  const setDebugLog = useStore((state) => state.setDebugLog);
 
   const goback = () => {
     router.back();
@@ -77,15 +84,52 @@ export default function TestModule() {
       case Command.GunReboot:
         sendCmdDispatch(Command.GunReboot);
         break;
+      case Command.OldTest:
+        setIsShowOldTestModal(true);
+        break;
+      case Command.stopOldTest:
+        sendCmdDispatch(Command.stopOldTest);
+        break;
       default:
         break;
     }
   };
 
+  const sendData = (fClass: string, fData: number, fData2: number) => {
+    const socket = SocketManage.getInstance();
+    if (socket.isConnected()) {
+      socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}:${fData2}`);
+    } else {
+      showNotifier({
+        title: '机器人未连接',
+        message: '机器人未连接',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
+      });
+    }
+  };
+
+  const onOldTestConfirm = (length: string = '0', widthValue: string = '0') => {
+    setIsShowOldTestModal(false);
+    setDebugLog({
+      time: new Date().toISOString(),
+      msg: `发送老化测试数据: param:${GlobalConst.oldTest}:${parseInt(length, 10)}:${parseInt(widthValue, 10)}`,
+    });
+    sendData(GlobalConst.oldTest, parseInt(length, 10), parseInt(widthValue, 10)); //发送到机器
+    setTimeout(() => {
+      sendCmdDispatch(Command.OldTest);
+    }, 100);
+  };
+
   return (
     <View className="flex w-full">
       <Header />
-
+      <OldTestModal
+        visible={isShowOldTestModal}
+        onDismiss={() => setIsShowOldTestModal(false)}
+        onConfirm={onOldTestConfirm}
+      />
       <View className="flex min-h-[72%] w-full flex-row px-3">
         <Card className=" mb-5 mr-3 w-[40%]" style={{ display: isShowlog ? 'none' : 'flex' }}>
           <Button
@@ -130,14 +174,14 @@ export default function TestModule() {
                 mode="text"
                 className="mx-1 mb-4  text-sm"
                 onPress={() => openDebugCommand(Command.legsDownTest)}>
-                辅助腿、杆 下 (LegsDownTest)
+                辅助腿下 (LegsDownTest)
               </Button>
 
               <Button
                 mode="text"
                 className="mx-1 mb-4  text-sm"
                 onPress={() => openDebugCommand(Command.legsUpTest)}>
-                辅助腿、杆 上 (LegsUpTest)
+                辅助腿上 (LegsUpTest)
               </Button>
 
               <Button
@@ -187,6 +231,20 @@ export default function TestModule() {
                 className="mx-1 mb-4 text-sm"
                 onPress={() => openDebugCommand(Command.GunReboot)}>
                 枪重启 (GunReboot)
+              </Button>
+
+              <Button
+                mode="text"
+                className="mx-1 mb-4 text-sm"
+                onPress={() => openDebugCommand(Command.OldTest)}>
+                老化测试 (OldTest)
+              </Button>
+
+              <Button
+                mode="text"
+                className="mx-1 mb-4 text-sm"
+                onPress={() => openDebugCommand(Command.stopOldTest)}>
+                停止老化测试 (StopOldTest)
               </Button>
             </View>
           </Card.Content>
