@@ -66,8 +66,8 @@
       "trackLaserRange": "Track laser range",
       "needToSet": "Need to set",
       "between": "between",
-      "leftChange": "Left change",
-      "rightChange": "Right change"
+      "leftChange": "Trigger left track",
+      "rightChange": "Trigger right track"
     },
     "errorsMap": {
       "errorInfo0": "Battery level below 10%",

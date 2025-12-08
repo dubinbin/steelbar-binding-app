@@ -77,7 +77,7 @@ export const ControlBar = () => {
 
           {renderControl()}
         </View>
-        {robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL ? <ControlExtraModule /> : null}
+        {robotStatus.currentMode !== ROBOT_CURRENT_MODE.LOCKED ? <ControlExtraModule /> : null}
       </View>
     </Card>
   );

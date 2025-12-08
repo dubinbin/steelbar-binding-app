@@ -2,12 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { SelectJumpCount } from '../select-jump-count';
-
 import { DownState, RebootState } from '@/constants';
 import { Command } from '@/constants/command';
 import useStore, { initWorkParams } from '@/store';
-import { ROBOT_CURRENT_MODE, ROBOT_WORK_MODE } from '@/types';
+import { ROBOT_CURRENT_MODE } from '@/types';
 import { globalGetConnect, sendCmdDispatch } from '@/utils/helper';
 import { showNotifier } from '@/utils/notifier';
 import { SocketManage } from '@/utils/socketManage';
@@ -94,16 +92,18 @@ export const ControlExtraModule = () => {
 
   return (
     <View className="relative flex w-full flex-row items-end justify-end">
-      <View className="-bottom-[10px] flex gap-y-5">
+      <View className="flex gap-y-5">
         <Button icon="reload" mode="elevated" onPress={robotReboot}>
           {t('common.tyingRobotRestart')}
         </Button>
-        <Button icon="restart" mode="elevated" onPress={robotReset}>
+        {/* <Button icon="restart" mode="elevated" onPress={robotReset}>
           {t('common.machineRestart')}
-        </Button>
-        <Button icon="elevator-down" mode="elevated" onPress={robotDown}>
-          {t('common.machineDown')}
-        </Button>
+        </Button> */}
+        {robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL ? (
+          <Button icon="elevator-down" mode="elevated" onPress={robotDown}>
+            {t('common.machineDown')}
+          </Button>
+        ) : null}
       </View>
     </View>
   );

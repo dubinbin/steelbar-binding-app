@@ -66,8 +66,8 @@
     "trackLaserRange": "变轨激光范围",
     "needToSet": "需要设置",
     "between": "之间",
-    "leftChange": "左变轨",
-    "rightChange": "右变轨"
+    "leftChange": "触发左边轨",
+    "rightChange": "触发右边轨"
   },
   "errorsMap": {
     "errorInfo0": "电量低于10%",

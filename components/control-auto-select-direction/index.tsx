@@ -206,7 +206,7 @@ export const ControlAutoSelectDirection = ({
       </View>
       {robotStatus.currentMode === ROBOT_CURRENT_MODE.AUTO &&
       robotStatus.currentBindingMode === ROBOT_WORK_MODE.SKIP_BINDING ? (
-        <View className="mt-24 flex w-full justify-start">
+        <View className="mt-20 flex w-full justify-start">
           <SelectJumpCount />
         </View>
       ) : null}
