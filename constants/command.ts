@@ -39,6 +39,9 @@ export enum Command {
   Heartbeat = 38, // 心跳
   OldTest = 39, // 老化测试
   stopOldTest = 40, // 停止老化测试
+
+  forceLeftChangeInAutoMode = 41, // 强制左变轨 自动模式
+  forceRightChangeInAutoMode = 42, // 强制右变轨 自动模式
 }
 
 export enum userDefaultEvent {

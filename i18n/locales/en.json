@@ -37,11 +37,10 @@
       "fullLashed": "Full tie",
       "skipLashed": "Skip tie",
       "lockMode": "Lock mode",
-      "tyingRobotRestart": "Tying robot restart",
+      "tyingRobotRestart": "Cut the wire",
       "machineRestart": "Machine restart",
       "machineDown": "Machine down",
       "parameterSettings": "Parameter settings",
-      "currentJumpCount": "Current jump count",
       "dataMonitor": "Data monitor",
       "trackLaser": "Track laser",
       "nodeLaser": "Node laser",
@@ -66,7 +65,9 @@
       "nodeLaserRange": "Node laser range",
       "trackLaserRange": "Track laser range",
       "needToSet": "Need to set",
-      "between": "between"
+      "between": "between",
+      "leftChange": "Left change",
+      "rightChange": "Right change"
     },
     "errorsMap": {
       "errorInfo0": "Battery level below 10%",

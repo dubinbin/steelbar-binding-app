@@ -31,7 +31,8 @@ export enum GlobalConst {
   backBoard = 'BackBoard', // 后板
   frontBoard = 'FrontBoard', // 前板
   mks = 'mks', // MKS
-  oldTest = 'oldTest', // 老化测试
+  oldTestLong = 'oldTestLong', // 老化测试长
+  oldTestWidth = 'oldTestWidth', // 老化测试宽
 }
 
 ///语言类型

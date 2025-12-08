@@ -95,10 +95,25 @@ export default function TestModule() {
     }
   };
 
-  const sendData = (fClass: string, fData: number, fData2: number) => {
+  const sendData = (fClass: string, fData: number) => {
     const socket = SocketManage.getInstance();
     if (socket.isConnected()) {
-      socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}:${fData2}`);
+      socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}`);
+    } else {
+      showNotifier({
+        title: '机器人未连接',
+        message: '机器人未连接',
+        type: 'error',
+        duration: 3000,
+        onPress: () => {},
+      });
+    }
+  };
+
+  const sendDataSpecial = (fClass: string, fData: number) => {
+    const socket = SocketManage.getInstance();
+    if (socket.isConnected()) {
+      socket.writeData(`${GlobalConst.forwardData}:${fClass}=${fData}`);
     } else {
       showNotifier({
         title: '机器人未连接',
@@ -112,11 +127,10 @@ export default function TestModule() {
 
   const onOldTestConfirm = (length: string = '0', widthValue: string = '0') => {
     setIsShowOldTestModal(false);
-    setDebugLog({
-      time: new Date().toISOString(),
-      msg: `发送老化测试数据: param:${GlobalConst.oldTest}:${parseInt(length, 10)}:${parseInt(widthValue, 10)}`,
-    });
-    sendData(GlobalConst.oldTest, parseInt(length, 10), parseInt(widthValue, 10)); //发送到机器
+    sendDataSpecial(GlobalConst.oldTestLong, parseInt(length, 10)); //发送到机器
+    setTimeout(() => {
+      sendDataSpecial(GlobalConst.oldTestWidth, parseInt(widthValue, 10)); //发送到机器
+    }, 32);
     setTimeout(() => {
       sendCmdDispatch(Command.OldTest);
     }, 100);
@@ -238,6 +252,13 @@ export default function TestModule() {
                 className="mx-1 mb-4 text-sm"
                 onPress={() => openDebugCommand(Command.OldTest)}>
                 老化测试 (OldTest)
+              </Button>
+
+              <Button
+                mode="text"
+                className="mx-1 mb-4 text-sm"
+                onPress={() => sendCmdDispatch(Command.OldTest)}>
+                老化测试 (纯命令)
               </Button>
 
               <Button

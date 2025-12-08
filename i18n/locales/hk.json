@@ -37,11 +37,10 @@
     "fullLashed": "滿扎",
     "skipLashed": "跳扎",
     "lockMode": "鎖止模式",
-    "tyingRobotRestart": "綁扎機重啟",
+    "tyingRobotRestart": "剪斷絲線",
     "machineRestart": "機器復位",
     "machineDown": "機器下降",
     "parameterSettings": "參數設置",
-    "currentJumpCount": "當前跳扎跳數",
     "dataMonitor": "數據監控",
     "trackLaser": "變軌激光",
     "nodeLaser": "節點激光",
@@ -66,7 +65,9 @@
     "nodeLaserRange": "節點激光範圍",
     "trackLaserRange": "變軌激光範圍",
     "needToSet": "需要設置",
-    "between": "之間"
+    "between": "之間",
+    "leftChange": "左變軌",
+    "rightChange": "右變軌"
   },
   "errorsMap": {
     "errorInfo0": "電量低於10%",
@@ -81,7 +82,7 @@
     "errorInfo9": "MKS電機過負載",
     "errorInfo10": "綁扎槍故障",
     "errorInfo11": "絲盤餘量不足",
-    "errorInfo12": "變軌失敗"
+    "errorInfo12": "變軌失敗",
   },
   "wifi": {
     "reconnect": "重連",

@@ -35,11 +35,11 @@ export const SelectJumpCount = () => {
   };
 
   return (
-    <View className="-mt-6 flex flex-col items-start justify-center">
+    <View className="flex flex-col items-start justify-center">
       <Text className="text-center text-lg font-bold">{t('common.currentSkipBindingCount')}</Text>
-      <View className="flex flex-col items-center justify-center">
+      <View className="flex flex-row items-center gap-x-5">
         {jumpCountList.map((item) => (
-          <View key={item.value} className="flex flex-row items-center justify-center gap-x-1">
+          <View key={item.value} className="flex flex-row items-center">
             <RadioButton.Android
               value={item.value}
               onPress={() => handleChange(item.value)}

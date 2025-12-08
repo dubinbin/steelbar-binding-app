@@ -105,13 +105,6 @@ export const ControlExtraModule = () => {
           {t('common.machineDown')}
         </Button>
       </View>
-
-      {robotStatus.currentMode === ROBOT_CURRENT_MODE.AUTO &&
-      robotStatus.currentBindingMode === ROBOT_WORK_MODE.SKIP_BINDING ? (
-        <View className="absolute left-0 top-0">
-          <SelectJumpCount />
-        </View>
-      ) : null}
     </View>
   );
 };

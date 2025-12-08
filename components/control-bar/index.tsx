@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Text, View } from 'react-native';
-import { Button, Card, Icon } from 'react-native-paper';
+import { Text, View } from 'react-native';
+import { Card, Icon } from 'react-native-paper';
 
 import { ControlAutoSelectDirection } from '../control-auto-select-direction';
 import { ControlExtraModule } from '../control-extra-module';
@@ -26,9 +25,7 @@ export const LockMode = () => {
 
 export const ControlBar = () => {
   const { robotStatus, workParams, setRobotStatus } = useStore((state) => state);
-  const [showMore, setShowMore] = useState(false);
   const { t } = useTranslation();
-  const { height } = Dimensions.get('window');
 
   // 点击开始
   const startTyping = () => {
@@ -68,7 +65,7 @@ export const ControlBar = () => {
 
   return (
     <Card className="relative pb-8">
-      <View className="flex h-full w-full flex-col justify-between px-8 pt-2">
+      <View className="flex min-h-[450px] w-full flex-col justify-between px-8 pt-2">
         <View className="mb-5 flex flex-col items-center">
           <View className="mb-2 mt-3 flex flex-row items-center justify-center">
             <Icon source="robot-happy-outline" size={22} />
@@ -80,37 +77,7 @@ export const ControlBar = () => {
 
           {renderControl()}
         </View>
-
-        {height > 700 ? (
-          <View className="flex w-full flex-row justify-end gap-x-5">
-            <ControlExtraModule />
-          </View>
-        ) : (
-          <View className="absolute bottom-0 right-5 flex w-full flex-row justify-end gap-x-5">
-            {showMore ? (
-              <View className="rounded-xl border border-gray-300 bg-white px-5 pb-16 pt-10">
-                <Button
-                  className="absolute right-0 top-1"
-                  mode="text"
-                  icon="chevron-down"
-                  onPress={() => setShowMore(false)}>
-                  <Text className="text-lg font-normal">{t('common.collapse')}</Text>
-                </Button>
-                <ControlExtraModule />
-              </View>
-            ) : (
-              <Button
-                mode="elevated"
-                icon="dots-horizontal"
-                className="absolute bottom-0 right-0"
-                onPress={() => {
-                  setShowMore(!showMore);
-                }}>
-                <Text>{t('common.moreFeatures')}</Text>
-              </Button>
-            )}
-          </View>
-        )}
+        {robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL ? <ControlExtraModule /> : null}
       </View>
     </Card>
   );
