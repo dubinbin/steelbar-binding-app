@@ -53,18 +53,6 @@ export const ControlAutoSelectDirection = ({
     }
   };
 
-  const onleftChange = () => {
-    sendCmdWithRepeat(() => {
-      sendCmdDispatch(Command.forceLeftChangeInAutoMode);
-    }, 2);
-  };
-
-  const onrightChange = () => {
-    sendCmdWithRepeat(() => {
-      sendCmdDispatch(Command.forceRightChangeInAutoMode);
-    }, 2);
-  };
-
   return (
     <>
       <View className="relative mt-16 flex flex-row items-center justify-center gap-x-5 ">
@@ -89,30 +77,6 @@ export const ControlAutoSelectDirection = ({
               onStop();
             }}>
             {t('common.stop')}
-          </Button>
-        </View>
-
-        <View className="absolute left-0 top-44 h-full w-full flex-row items-center justify-center gap-x-10">
-          <Button
-            mode="contained-tonal"
-            buttonColor="#012641"
-            textColor="#ffffff"
-            style={{ top: -80, left: -50 }}
-            onPress={() => {
-              onleftChange();
-            }}>
-            {t('common.leftChange')}
-          </Button>
-
-          <Button
-            mode="contained-tonal"
-            buttonColor="#FD1D1DD5"
-            textColor="#ffffff"
-            style={{ top: -80, right: -50 }}
-            onPress={() => {
-              onrightChange();
-            }}>
-            {t('common.rightChange')}
           </Button>
         </View>
 
