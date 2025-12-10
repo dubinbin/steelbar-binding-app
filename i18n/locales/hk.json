@@ -39,6 +39,7 @@
     "lockMode": "鎖止模式",
     "tyingRobotRestart": "剪斷絲線",
     "machineRestart": "機器復位",
+    "triggertrack": "觸發變軌",
     "machineDown": "機器下降",
     "parameterSettings": "參數設置",
     "dataMonitor": "數據監控",

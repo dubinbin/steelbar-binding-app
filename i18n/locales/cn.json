@@ -39,6 +39,7 @@
     "lockMode": "锁止模式",
     "tyingRobotRestart": "剪断丝线",
     "machineRestart": "机器复位",
+    "triggertrack": "触发变轨",
     "machineDown": "机器下降",
     "parameterSettings": "参数设置",
     "dataMonitor": "数据监控",

@@ -90,15 +90,21 @@ export const ControlExtraModule = () => {
     }
   };
 
+  const triggerTrack = () => {
+    sendCmdDispatch(Command.triggerTrack);
+  };
+
   return (
     <View className="relative flex w-full flex-row items-end justify-end">
       <View className="flex gap-y-5">
         <Button icon="reload" mode="elevated" onPress={robotReboot}>
           {t('common.tyingRobotRestart')}
         </Button>
-        {/* <Button icon="restart" mode="elevated" onPress={robotReset}>
-          {t('common.machineRestart')}
-        </Button> */}
+        {robotStatus.currentMode === ROBOT_CURRENT_MODE.AUTO ? (
+          <Button icon="restart" mode="elevated" onPress={triggerTrack}>
+            {t('common.triggertrack')}
+          </Button>
+        ) : null}
         {robotStatus.currentMode === ROBOT_CURRENT_MODE.MANUAL ? (
           <Button icon="elevator-down" mode="elevated" onPress={robotDown}>
             {t('common.machineDown')}

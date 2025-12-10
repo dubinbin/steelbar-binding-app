@@ -39,6 +39,7 @@
       "lockMode": "Lock mode",
       "tyingRobotRestart": "Cut the wire",
       "machineRestart": "Machine restart",
+      "triggertrack": "Trigger track",
       "machineDown": "Machine down",
       "parameterSettings": "Parameter settings",
       "dataMonitor": "Data monitor",
