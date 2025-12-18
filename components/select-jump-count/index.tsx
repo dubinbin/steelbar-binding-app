@@ -57,7 +57,7 @@ export const SelectJumpCount = () => {
     const socket = SocketManage.getInstance();
 
     if (socket.isConnected()) {
-      socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}`);
+      socket.writeData(`${GlobalConst.forwardData}:${fClass}=${fData}`);
     } else {
       showNotifier({
         title: t('errors.robotUnconnectedTips'),

@@ -95,21 +95,6 @@ export default function TestModule() {
     }
   };
 
-  const sendData = (fClass: string, fData: number) => {
-    const socket = SocketManage.getInstance();
-    if (socket.isConnected()) {
-      socket.writeData(`${GlobalConst.forwardData}:${fClass}:${fData}`);
-    } else {
-      showNotifier({
-        title: '机器人未连接',
-        message: '机器人未连接',
-        type: 'error',
-        duration: 3000,
-        onPress: () => {},
-      });
-    }
-  };
-
   const sendDataSpecial = (fClass: string, fData: number) => {
     const socket = SocketManage.getInstance();
     if (socket.isConnected()) {
