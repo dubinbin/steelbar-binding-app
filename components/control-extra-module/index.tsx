@@ -96,7 +96,7 @@ export const ControlExtraModule = () => {
 
   return (
     <View className="relative flex w-full flex-row items-end justify-end">
-      <View className="flex gap-y-5">
+      <View className="flex flex-row gap-x-5 gap-y-5">
         <Button icon="reload" mode="elevated" onPress={robotReboot}>
           {t('common.tyingRobotRestart')}
         </Button>

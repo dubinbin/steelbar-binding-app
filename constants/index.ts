@@ -33,6 +33,7 @@ export enum GlobalConst {
   mks = 'mks', // MKS
   oldTestLong = 'oldTestLong', // 老化测试长
   oldTestWidth = 'oldTestWidth', // 老化测试宽
+  jumpNo = 'jumpNo', // 跳过扎数
 }
 
 ///语言类型
