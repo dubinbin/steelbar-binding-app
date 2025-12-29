@@ -28,7 +28,7 @@ const Home = () => {
             <DataInspect />
           </View>
         </View>
-        <View className="flex w-[26%]">
+        <View className="flex h-[85%] w-[26%]">
           <StatusBox />
         </View>
         <View className="flex w-[37%] flex-row">

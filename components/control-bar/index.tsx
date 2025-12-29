@@ -64,7 +64,7 @@ export const ControlBar = () => {
   };
 
   return (
-    <Card className="relative pb-8">
+    <Card className="relative h-[85%]">
       <View className="flex min-h-[450px] w-full flex-col justify-between px-8 pt-2">
         <View className="mb-5 flex flex-col items-center">
           <View className="mb-2 mt-3 flex flex-row items-center justify-center">

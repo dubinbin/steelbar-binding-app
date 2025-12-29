@@ -1,16 +1,13 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button, Card, DataTable, Icon } from 'react-native-paper';
 
 import { useStore } from '@/store';
 import { ConnectDeviceInfo } from '@/utils/connectDeviceInfo';
 
 export const ErrorData = () => {
-  const { height } = Dimensions.get('window');
-  const targetHeight = height * 0.45;
-  const rowCount = height > 550 ? Math.floor(targetHeight / 100) : 1;
   const { t } = useTranslation();
   const { errorGroup } = useStore((state) => state);
 
@@ -35,8 +32,8 @@ export const ErrorData = () => {
   };
 
   return (
-    <Card className="min-h-[53%]">
-      <View className="w-full px-5 pb-1 pt-2">
+    <Card className="min-h-[47%]">
+      <View className="w-full px-5">
         <View className="mb-2 mt-3  flex flex-row items-center justify-center">
           <Icon source="alert-circle-outline" size={22} />
           <Text className="ml-2 text-center text-2xl font-bold">{t('malfunction.title')}</Text>
@@ -49,7 +46,7 @@ export const ErrorData = () => {
           </DataTable.Header>
 
           {items.length > 0 ? (
-            items.slice(0, rowCount).map((item) => (
+            items.slice(0, 3).map((item) => (
               <DataTable.Row key={item.key}>
                 <DataTable.Cell textStyle={{ textAlign: 'center', fontSize: 12 }}>
                   {item.index}
