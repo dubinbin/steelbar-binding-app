@@ -64,9 +64,9 @@ export const ControlBar = () => {
   };
 
   return (
-    <Card className="relative h-[85%]">
-      <View className="flex min-h-[450px] w-full flex-col justify-between px-8 pt-2">
-        <View className="mb-5 flex flex-col items-center">
+    <Card className="relative">
+      <View className="flex  w-full flex-col justify-between px-8 pb-5 pt-2">
+        <View className="flex flex-col items-center">
           <View className="mb-2 mt-3 flex flex-row items-center justify-center">
             <Icon source="robot-happy-outline" size={22} />
             <Text className="ml-2 text-center text-2xl font-bold">
@@ -74,8 +74,7 @@ export const ControlBar = () => {
             </Text>
           </View>
           <ControlSegmented />
-
-          {renderControl()}
+          <View className="min-h-[250px]">{renderControl()}</View>
         </View>
         {robotStatus.currentMode !== ROBOT_CURRENT_MODE.LOCKED ? <ControlExtraModule /> : null}
       </View>

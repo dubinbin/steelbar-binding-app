@@ -7,6 +7,7 @@ import useStore from '@/store';
 import { SocketManage } from '@/utils/socketManage';
 import { GlobalConst } from '@/constants';
 import { showNotifier } from '@/utils/notifier';
+import { sendCmdWithRepeat } from '@/utils/helper';
 const jumpCountList = [
   {
     value: '1',
@@ -57,7 +58,9 @@ export const SelectJumpCount = () => {
     const socket = SocketManage.getInstance();
 
     if (socket.isConnected()) {
-      socket.writeData(`${GlobalConst.forwardData}:${fClass}=${fData}`);
+      sendCmdWithRepeat(() => {
+        socket.writeData(`${GlobalConst.forwardData}:${fClass}=${fData}`);
+      }, 2);
     } else {
       showNotifier({
         title: t('errors.robotUnconnectedTips'),
