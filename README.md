@@ -282,4 +282,4 @@ eas build --profile production --platform ios
 
 ## 联系方式
 
-如有问题或建议，请创建 Issue 或联系项目维护者。 
+如有问题或建议，请创建 Issue 或联系项目维护者
